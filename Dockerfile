@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/nodejs-18:1-62.1692771036 AS builder
+FROM registry.access.redhat.com/ubi9/nodejs-18:1-80 AS builder
 
 WORKDIR /opt/app-root/src
 
@@ -9,7 +9,7 @@ RUN mkdir -p /opt/app-root/src/node_modules && \
     npm ci && \
     npm run build
 
-FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:1-67
+FROM registry.access.redhat.com/ubi9/nodejs-18:1-80
 
 ## Uncomment the below lines to update image security content if any
 # USER root
@@ -18,7 +18,7 @@ FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:1-67
 LABEL name="ibm/template-node-typescript" \
       vendor="IBM" \
       version="1" \
-      release="67" \
+      release="80" \
       summary="This is an example of a container image." \
       description="This container image will deploy a Typescript Node App"
 
@@ -34,11 +34,9 @@ RUN ls -lA && \
 
 COPY --chown=1001:root licenses licenses
 COPY --chown=1001:root public public
-# COPY --chown=1001:root licenses /licenses
 
 ENV HOST=0.0.0.0 PORT=3000
 
 EXPOSE 3000/tcp
 
-CMD ["npm", "run", "start"]
-
+CMD [ "node", "dist/main" ]
