@@ -12,3 +12,5 @@ test-report.xml
 # Chart dependencies
 **/charts/*.tgz
 Chart.lock
+.env
+family-allowance.tgz
