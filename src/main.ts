@@ -12,7 +12,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
       .setTitle('Digital PDS API')
       .setDescription('APIs for Digital PDS service')
-      .setVersion('0.1.0')
+      .setVersion(process.env['npm_package_version'] || '0.0.0')
       .addServer(server)
       .addSecurity('basic', {
         type: 'http',

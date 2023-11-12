@@ -1,10 +1,10 @@
 {
-  "name": "template-node-typescript-new",
-  "version": "0.0.1",
-  "description": "",
+  "name": "digital-pds-svc",
+  "version": "0.2.0",
+  "description": "Digital PDS Service",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "Apache 2.0",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
