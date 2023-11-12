@@ -1,10 +1,10 @@
 {
-  "name": "template-node-typescript-new",
-  "version": "0.0.1",
-  "description": "",
+  "name": "digital-pds-svc",
+  "version": "0.2.0",
+  "description": "Digital PDS Service",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "Apache 2.0",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -27,6 +27,7 @@
     "@nestjs/graphql": "^12.0.10",
     "@nestjs/platform-express": "^10.2.8",
     "@nestjs/swagger": "^7.1.15",
+    "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.14.2",

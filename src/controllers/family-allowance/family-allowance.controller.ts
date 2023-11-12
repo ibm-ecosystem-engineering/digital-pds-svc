@@ -11,11 +11,12 @@ import {
     UseInterceptors
 } from "@nestjs/common";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {ApiOkResponse, ApiProperty, ApiQuery, ApiTags} from "@nestjs/swagger";
+import {ApiBasicAuth, ApiExtension, ApiOkResponse, ApiOperation, ApiProperty, ApiQuery, ApiTags} from "@nestjs/swagger";
 import {getType} from "mime";
 
 import {FamilyAllowanceApi} from "../../services";
 import {ActivityModel, DependentModel, DocumentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
+import * as inspector from "inspector";
 
 class Dependent implements DependentModel {
     @ApiProperty()
@@ -50,6 +51,32 @@ class Document implements DocumentModel {
     id: string;
 }
 
+interface ListResult<T> {
+    instances: T[]
+}
+
+class FamilyAllowanceListResult implements ListResult<FamilyAllowanceMinimal> {
+    @ApiProperty({title: 'Results', type: () => [FamilyAllowanceMinimal]})
+    instances: FamilyAllowanceMinimal[]
+}
+
+class FamilyAllowanceMinimal {
+    @ApiProperty({title: 'Change type'})
+    changeType: string;
+    @ApiProperty({title: 'Dependent name'})
+    dependentName: string;
+    @ApiProperty({title: 'Employee id'})
+    employeeId: string;
+    @ApiProperty({title: 'First name'})
+    firstName: string;
+    @ApiProperty({title: 'Id'})
+    id: string;
+    @ApiProperty({title: 'Last name'})
+    lastName: string;
+    @ApiProperty({title: 'Status'})
+    status: string;
+}
+
 class FamilyAllowance implements FamilyAllowanceModel {
     @ApiProperty()
     changeType: string;
@@ -73,20 +100,44 @@ class FamilyAllowance implements FamilyAllowanceModel {
     supportingDocuments: DocumentModel[];
 }
 
+const minimizeFamilyAllowanceModel = (input: FamilyAllowanceModel): FamilyAllowanceMinimal => {
+    return {
+        id: input.id,
+        changeType: input.changeType,
+        employeeId: input.employeeId,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        status: input.status,
+        dependentName: `${input.dependent.firstName} ${input.dependent.lastName}`,
+    }
+}
+
 @ApiTags('family-allowance')
+@ApiExtension('x-ibm', {annotations: 'true', 'application-id': 'family-allowance'})
 @Controller('family-allowance')
 export class FamilyAllowanceController {
     constructor(private readonly service: FamilyAllowanceApi) {}
 
+    @Post()
+    @ApiOperation({
+        operationId: 'add-case',
+        summary: 'Add case',
+        description: 'Add a family allowance case'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Result of creating a new family allowance case"
     })
-    @Post()
     async addFamilyAllowanceCase(@Body() newCase: FamilyAllowance): Promise<FamilyAllowanceModel> {
         return this.service.addFamilyAllowanceCase(newCase);
     }
 
+    @Get()
+    @ApiOperation({
+        operationId: 'list-cases',
+        summary: 'List cases',
+        description: 'List the family allowance cases'
+    })
     @ApiQuery({
         name: "status",
         enum: FamilyAllowanceStatus,
@@ -94,66 +145,103 @@ export class FamilyAllowanceController {
         required: false
     })
     @ApiOkResponse({
-        type: [FamilyAllowance],
+        type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
-    @Get()
-    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceModel[]> {
-        return this.service.listFamilyAllowanceCases(status);
+    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
+        return this.service
+            .listFamilyAllowanceCases(status)
+            .then(result => result.map(minimizeFamilyAllowanceModel))
+            .then(instances => ({instances}));
     }
 
+    @Get(':id')
+    @ApiOperation({
+        operationId: 'get-case',
+        summary: 'Get case by id',
+        description: 'Get the family allowance case for the provided id'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns selected case"
     })
-    @Get(':id')
     async getFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceModel> {
         return this.service.getFamilyAllowanceCase(id);
     }
 
+    @Post(':id')
+    @ApiOperation({
+        operationId: 'update-case',
+        summary: 'Update case',
+        description: 'Update the family allowance case identified by the provided id'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
     })
-    @Post(':id')
     async updateFamilyAllowanceCase(@Param('id') id: string, @Body() update: Partial<FamilyAllowanceModel>): Promise<FamilyAllowanceModel> {
         return this.service.updateFamilyAllowanceCase(id, update);
     }
 
+    @Get(':id/review')
+    @ApiOperation({
+        operationId: 'review-case',
+        summary: 'Review case',
+        description: 'Review the family allowance case identified by the provided id'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
     })
-    @Get(':id/review')
     async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('needsInfo') needsInfo?: boolean): Promise<FamilyAllowanceModel> {
         return this.service.reviewFamilyAllowanceCase(id, needsInfo);
     }
 
+    @Get(':id/approve')
+    @ApiOperation({
+        operationId: 'approve-case',
+        summary: 'Approve case',
+        description: 'Approve the family allowance case identified by the provided id'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
     })
-    @Get(':id/approve')
     async approveFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceModel> {
         return this.service.approveFamilyAllowanceCase(id);
     }
 
+    @Get(':id/close')
+    @ApiOperation({
+        operationId: 'close-case',
+        summary: 'Close case',
+        description: 'Close the family allowance case identified by the provided id'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
     })
-    @Get(':id/close')
-    async closeCase(id: string, resolution: string): Promise<FamilyAllowanceModel> {
+    async closeCase(@Param('id') id: string, @Query('resolution') resolution: string): Promise<FamilyAllowanceModel> {
         return this.service.closeCase(id, resolution);
     }
 
-    @Post('upload')
+    @Post(':id/upload')
+    @ApiOperation({
+        operationId: 'add-document',
+        summary: 'Add document to case',
+        description: 'Add a document to the family allowance case identified by the provided id'
+    })
     @UseInterceptors(FileInterceptor('file'))
     async addDocumentToFamilyAllowanceCase(@Param('id') id: string, @Body() input: Document, @UploadedFile() file: Express.Multer.File): Promise<FamilyAllowanceModel> {
         return this.service.addDocumentToFamilyAllowanceCase(id, input, file.buffer)
     }
 
     @Get(':id/doc/:docId/:name')
+    @ApiOperation({
+        operationId: 'download-document',
+        summary: 'Download document',
+        description: 'Download a document from the family allowance case identified by the provided id'
+    })
     async downloadFileByName(
         @Param('id') id: string,
         @Param('docId') documentId: string,
