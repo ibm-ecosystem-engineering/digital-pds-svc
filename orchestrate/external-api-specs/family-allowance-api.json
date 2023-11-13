@@ -35,6 +35,10 @@
       },
       "get": {
         "operationId": "list-cases",
+        "x-ibm-operation": {
+          "verb": "retrievewithwhere",
+          "model": "FamilyAllowanceMinimal"
+        },
         "summary": "List cases",
         "description": "List the family allowance cases",
         "parameters": [
@@ -43,6 +47,7 @@
             "required": false,
             "in": "query",
             "description": "The status filter for the list",
+            "explode": true,
             "schema": {
               "enum": [
                 "Ready for Review",
@@ -51,8 +56,11 @@
                 "Approved",
                 "Closed"
               ],
+              "x-ibm-important": true,
               "type": "string"
-            }
+            },
+            "x-ibm-label": "Status",
+            "x-ibm-order": 1
           }
         ],
         "responses": {
@@ -61,7 +69,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FamilyAllowanceListResult"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FamilyAllowanceMinimal"
+                  }
                 }
               }
             }
@@ -326,7 +337,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "0.1.0",
+    "version": "0.2.1",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
@@ -516,21 +527,6 @@
           "id",
           "lastName",
           "status"
-        ]
-      },
-      "FamilyAllowanceListResult": {
-        "type": "object",
-        "properties": {
-          "instances": {
-            "title": "Results",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FamilyAllowanceMinimal"
-            }
-          }
-        },
-        "required": [
-          "instances"
         ]
       }
     }
