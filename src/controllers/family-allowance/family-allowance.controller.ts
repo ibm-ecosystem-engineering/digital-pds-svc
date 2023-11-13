@@ -146,13 +146,14 @@ export class FamilyAllowanceController {
         explode: true,
     })
     @ApiOkResponse({
-        type: [FamilyAllowanceMinimal],
+        type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
-    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceMinimal[]> {
+    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
         return this.service
             .listFamilyAllowanceCases(status)
             .then(result => result.map(minimizeFamilyAllowanceModel))
+            .then(instances => ({instances}))
     }
 
     @Get(':id')

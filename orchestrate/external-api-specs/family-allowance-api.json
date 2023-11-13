@@ -69,10 +69,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FamilyAllowanceMinimal"
-                  }
+                  "$ref": "#/components/schemas/FamilyAllowanceListResult"
                 }
               }
             }
@@ -337,7 +334,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
@@ -492,31 +489,45 @@
         "properties": {
           "changeType": {
             "type": "string",
-            "title": "Change type"
+            "title": "Change type",
+            "x-ibm-order": 6,
+            "x-ibm-show": true
           },
           "dependentName": {
             "type": "string",
-            "title": "Dependent name"
+            "title": "Dependent name",
+            "x-ibm-order": 7,
+            "x-ibm-show": true
           },
           "employeeId": {
             "type": "string",
-            "title": "Employee id"
+            "title": "Employee id",
+            "x-ibm-order": 4,
+            "x-ibm-show": true
           },
           "firstName": {
             "type": "string",
-            "title": "First name"
+            "title": "First name",
+            "x-ibm-order": 2,
+            "x-ibm-show": true
           },
           "id": {
             "type": "string",
-            "title": "Id"
+            "title": "Id",
+            "x-ibm-order": 1,
+            "x-ibm-show": true
           },
           "lastName": {
             "type": "string",
-            "title": "Last name"
+            "title": "Last name",
+            "x-ibm-order": 3,
+            "x-ibm-show": true
           },
           "status": {
             "type": "string",
-            "title": "Status"
+            "title": "Status",
+            "x-ibm-order": 5,
+            "x-ibm-show": true
           }
         },
         "required": [
@@ -527,6 +538,21 @@
           "id",
           "lastName",
           "status"
+        ]
+      },
+      "FamilyAllowanceListResult": {
+        "type": "object",
+        "properties": {
+          "instances": {
+            "title": "Results",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyAllowanceMinimal"
+            }
+          }
+        },
+        "required": [
+          "instances"
         ]
       }
     }
