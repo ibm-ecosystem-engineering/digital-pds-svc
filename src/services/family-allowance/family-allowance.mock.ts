@@ -1,5 +1,3 @@
-import * as Buffer from "buffer";
-
 import {FamilyAllowanceApi} from "./family-allowance.api";
 import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
 
@@ -18,7 +16,13 @@ const cases: FamilyAllowanceContentModel[] = [{
         birthDate: '11/07/2018',
         governmentId: '432840493'
     },
-    supportingDocuments: [],
+    supportingDocuments: [{
+        id: '1-1',
+        name: 'test.pdf',
+        url: 'http://bogus/test.pdf',
+        content: Buffer.from('content'),
+        type: 'application/pdf'
+    }],
     status: FamilyAllowanceStatus.ReadyForReview,
     history: [],
 }, {
