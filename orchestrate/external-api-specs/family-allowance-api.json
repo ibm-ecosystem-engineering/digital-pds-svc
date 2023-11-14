@@ -41,7 +41,7 @@
         },
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__0.2.2__get-case",
+            "skill_id": "Digital-PDS-API__0.3.0__get-case",
             "utterance": "show the family allowance case details"
           }
         ],
@@ -50,6 +50,69 @@
           "list family allowance cases"
         ],
         "summary": "List cases",
+        "description": "List the family allowance cases",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "The status filter for the list",
+            "explode": true,
+            "x-ibm-label": "Status",
+            "x-ibm-order": 1,
+            "schema": {
+              "enum": [
+                "Ready for Review",
+                "Needs Info",
+                "Reviewed",
+                "Approved",
+                "Closed"
+              ],
+              "x-ibm-important": true,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns list of family allowance cases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FamilyAllowanceMinimal"
+                  },
+                  "x-ibm-parameter-wrapper": true,
+                  "x-ibm-response-wrapper": true
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "family-allowance"
+        ]
+      }
+    },
+    "/family-allowance/wrapped": {
+      "get": {
+        "operationId": "list-cases-wrapped",
+        "x-ibm-operation": {
+          "verb": "retrievewithwhere",
+          "model": "FamilyAllowanceCases"
+        },
+        "x-ibm-next-actions": [
+          {
+            "skill_id": "Digital-PDS-API__0.3.0__get-case",
+            "utterance": "show the family allowance case details"
+          }
+        ],
+        "x-ibm-nl-intent-examples": [
+          "get wrapped family allowance cases",
+          "list wrapped family allowance cases"
+        ],
+        "summary": "List cases wrapped",
         "description": "List the family allowance cases",
         "parameters": [
           {
@@ -95,19 +158,19 @@
         "operationId": "get-case",
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__0.2.2__update-case",
+            "skill_id": "Digital-PDS-API__0.3.0__update-case",
             "utterance": "update the family allowance case"
           },
           {
-            "skill_id": "Digital-PDS-API__0.2.2__case-needs-info",
+            "skill_id": "Digital-PDS-API__0.3.0__case-needs-info",
             "utterance": "family allowance case needs info"
           },
           {
-            "skill_id": "Digital-PDS-API__0.2.2__send-case-to-compensation",
+            "skill_id": "Digital-PDS-API__0.3.0__send-case-to-compensation",
             "utterance": "send the family allowance case to compensation"
           },
           {
-            "skill_id": "Digital-PDS-API__0.2.2__close-case",
+            "skill_id": "Digital-PDS-API__0.3.0__close-case",
             "utterance": "close the family allowance case"
           }
         ],
@@ -405,7 +468,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
