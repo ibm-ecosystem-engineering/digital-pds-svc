@@ -132,9 +132,9 @@ export class FamilyAllowanceController {
         return this.service.addFamilyAllowanceCase(newCase);
     }
 
-    @Get()
+    @Get('wrapped')
     @ApiOperation({
-        operationId: 'list-cases',
+        operationId: 'list-cases-wrapped',
         summary: 'List cases',
         description: 'List the family allowance cases'
     })
@@ -149,11 +149,34 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
-    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
+    async listFamilyAllowanceCaseWrapped(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
         return this.service
             .listFamilyAllowanceCases(status)
             .then(result => result.map(minimizeFamilyAllowanceModel))
             .then(instances => ({instances}))
+    }
+
+    @Get()
+    @ApiOperation({
+        operationId: 'list-cases',
+        summary: 'List cases',
+        description: 'List the family allowance cases'
+    })
+    @ApiQuery({
+        name: "status",
+        enum: FamilyAllowanceStatus,
+        description: "The status filter for the list",
+        required: false,
+        explode: true,
+    })
+    @ApiOkResponse({
+        type: [FamilyAllowanceMinimal],
+        description: "Returns list of family allowance cases",
+    })
+    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceMinimal[]> {
+        return this.service
+            .listFamilyAllowanceCases(status)
+            .then(result => result.map(minimizeFamilyAllowanceModel))
     }
 
     @Get(':id')
