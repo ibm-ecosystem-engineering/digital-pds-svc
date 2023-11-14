@@ -159,7 +159,7 @@ export class FamilyAllowanceController {
     @Get(':id')
     @ApiOperation({
         operationId: 'get-case',
-        summary: 'Get case by id',
+        summary: 'Get case details',
         description: 'Get the family allowance case for the provided id'
     })
     @ApiOkResponse({
@@ -184,18 +184,40 @@ export class FamilyAllowanceController {
         return this.service.updateFamilyAllowanceCase(id, update);
     }
 
-    @Get(':id/review')
+    @Get(':id/needsInfo')
     @ApiOperation({
-        operationId: 'review-case',
-        summary: 'Review case',
-        description: 'Review the family allowance case identified by the provided id'
+        operationId: 'case-needs-info',
+        summary: 'Case needs info',
+        description: 'Mark the family allowance case identified by the provided id as needing info'
+    })
+    @ApiQuery({
+        name: 'comment',
+        required: false,
     })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
     })
-    async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('needsInfo') needsInfo?: boolean): Promise<FamilyAllowanceModel> {
-        return this.service.reviewFamilyAllowanceCase(id, needsInfo);
+    async needsInfoFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceModel> {
+        return this.service.reviewFamilyAllowanceCase(id, true, comment);
+    }
+
+    @Get(':id/sendToCompensation')
+    @ApiOperation({
+        operationId: 'send-case-to-compensation',
+        summary: 'Send case to compensation office',
+        description: 'Send the family allowance case identified by the provided id to the compensation office'
+    })
+    @ApiQuery({
+        name: 'comment',
+        required: false,
+    })
+    @ApiOkResponse({
+        type: FamilyAllowance,
+        description: "Returns updated case"
+    })
+    async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceModel> {
+        return this.service.reviewFamilyAllowanceCase(id, false, comment);
     }
 
     @Get(':id/approve')
