@@ -11,21 +11,37 @@ import {
     UseInterceptors
 } from "@nestjs/common";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {ApiBasicAuth, ApiExtension, ApiOkResponse, ApiOperation, ApiProperty, ApiQuery, ApiTags} from "@nestjs/swagger";
+import {
+    ApiBasicAuth,
+    ApiExtension,
+    ApiOkResponse,
+    ApiOperation,
+    ApiParam,
+    ApiProperty,
+    ApiQuery,
+    ApiTags
+} from "@nestjs/swagger";
 import {getType} from "mime";
 
 import {FamilyAllowanceApi} from "../../services";
-import {ActivityModel, DependentModel, DocumentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
+import {
+    ActivityModel,
+    DependentModel,
+    DocumentModel,
+    DocumentWithContentModel,
+    FamilyAllowanceModel,
+    FamilyAllowanceStatus
+} from "../../models";
 import * as inspector from "inspector";
 
 class Dependent implements DependentModel {
-    @ApiProperty()
+    @ApiProperty({title: 'Birth Date'})
     birthDate: string;
-    @ApiProperty()
+    @ApiProperty({title: 'First Name'})
     firstName: string;
-    @ApiProperty()
+    @ApiProperty({title: 'Government ID'})
     governmentId: string;
-    @ApiProperty()
+    @ApiProperty({title: 'Last Name'})
     lastName: string;
 }
 
@@ -78,23 +94,23 @@ class FamilyAllowanceMinimal {
 }
 
 class FamilyAllowance implements FamilyAllowanceModel {
-    @ApiProperty()
+    @ApiProperty({title: 'Change Type'})
     changeType: string;
     @ApiProperty({type: () => Dependent})
     dependent: DependentModel;
-    @ApiProperty()
+    @ApiProperty({title: 'Employee ID'})
     employeeId: string;
-    @ApiProperty()
+    @ApiProperty({title: 'First Name'})
     firstName: string;
-    @ApiProperty()
+    @ApiProperty({title: 'Government ID'})
     governmentId: string;
     @ApiProperty({type: () => [Activity]})
     history: ActivityModel[];
-    @ApiProperty()
+    @ApiProperty({title: 'ID'})
     id: string;
-    @ApiProperty()
+    @ApiProperty({title: 'Last Name'})
     lastName: string;
-    @ApiProperty({enum: FamilyAllowanceStatus})
+    @ApiProperty({title: 'Status', enum: FamilyAllowanceStatus})
     status: FamilyAllowanceStatus;
     @ApiProperty({type: () => [Document]})
     supportingDocuments: DocumentModel[];
@@ -110,6 +126,19 @@ const minimizeFamilyAllowanceModel = (input: FamilyAllowanceModel): FamilyAllowa
         status: input.status,
         dependentName: `${input.dependent.firstName} ${input.dependent.lastName}`,
     }
+}
+
+const filterSupportingDocuments = (docs: DocumentModel[]): DocumentModel[] => {
+    return docs.map(doc => {
+        const val = Object.assign({}, doc) as DocumentWithContentModel
+
+        delete val.content
+
+        return val
+    })
+}
+const filterResult = (result: FamilyAllowanceModel): FamilyAllowanceModel => {
+    return Object.assign({}, result, {supportingDocuments: filterSupportingDocuments(result.supportingDocuments)})
 }
 
 @ApiTags('family-allowance')
@@ -132,30 +161,6 @@ export class FamilyAllowanceController {
         return this.service.addFamilyAllowanceCase(newCase);
     }
 
-    @Get('wrapped')
-    @ApiOperation({
-        operationId: 'list-cases-wrapped',
-        summary: 'List cases',
-        description: 'List the family allowance cases'
-    })
-    @ApiQuery({
-        name: "status",
-        enum: FamilyAllowanceStatus,
-        description: "The status filter for the list",
-        required: false,
-        explode: true,
-    })
-    @ApiOkResponse({
-        type: FamilyAllowanceListResult,
-        description: "Returns list of family allowance cases",
-    })
-    async listFamilyAllowanceCaseWrapped(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
-        return this.service
-            .listFamilyAllowanceCases(status)
-            .then(result => result.map(minimizeFamilyAllowanceModel))
-            .then(instances => ({instances}))
-    }
-
     @Get()
     @ApiOperation({
         operationId: 'list-cases',
@@ -170,13 +175,14 @@ export class FamilyAllowanceController {
         explode: true,
     })
     @ApiOkResponse({
-        type: [FamilyAllowanceMinimal],
+        type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
-    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceMinimal[]> {
+    async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
         return this.service
             .listFamilyAllowanceCases(status)
             .then(result => result.map(minimizeFamilyAllowanceModel))
+            .then(instances => ({instances}))
     }
 
     @Get(':id')
@@ -185,12 +191,24 @@ export class FamilyAllowanceController {
         summary: 'Get case details',
         description: 'Get the family allowance case for the provided id'
     })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns selected case"
     })
     async getFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceModel> {
-        return this.service.getFamilyAllowanceCase(id);
+        console.log('Getting family allowance case: ' + id);
+
+        return this.service
+            .getFamilyAllowanceCase(id)
+            .then(filterResult)
+            .then(result => {
+                console.log('/result: ', result)
+                return result
+            })
     }
 
     @Post(':id')
