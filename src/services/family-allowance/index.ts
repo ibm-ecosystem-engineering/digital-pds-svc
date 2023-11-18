@@ -1,6 +1,6 @@
 import {Provider} from "@nestjs/common";
 import {FamilyAllowanceApi} from "./family-allowance.api";
-import {FamilyAllowanceMock} from "./family-allowance.mock";
+import {FamilyAllowanceMock} from "./mock";
 
 export * from './family-allowance.api'
 

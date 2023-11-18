@@ -1,70 +1,33 @@
-import {FamilyAllowanceApi} from "./family-allowance.api";
-import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
+import * as Buffer from "buffer";
 
-interface FamilyAllowanceContentModel extends FamilyAllowanceModel<DocumentWithContentModel> {}
+import {CASES, FamilyAllowanceContentModel} from "./mock-data";
+import {FamilyAllowanceApi} from "../family-allowance.api";
+import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../../models";
+import {FamilyAllowanceBase} from "../family-allowance.base";
 
-const cases: FamilyAllowanceContentModel[] = [{
-    id: '1',
-    firstName: 'John',
-    lastName: 'Doe',
-    employeeId: '999450',
-    governmentId: '123485895',
-    changeType: 'add',
-    dependent: {
-        firstName: 'Sally',
-        lastName: 'Doe',
-        birthDate: '11/07/2018',
-        governmentId: '432840493'
-    },
-    supportingDocuments: [{
-        id: '1-1',
-        name: 'test.pdf',
-        url: 'http://bogus/test.pdf',
-        content: Buffer.from('content'),
-        type: 'application/pdf'
-    }],
-    status: FamilyAllowanceStatus.ReadyForReview,
-    history: [],
-}, {
-    id: '2',
-    firstName: 'Jane',
-    lastName: 'Doe',
-    employeeId: '999451',
-    governmentId: '123485896',
-    changeType: 'add',
-    dependent: {
-        firstName: 'Mike',
-        lastName: 'Doe',
-        birthDate: '11/05/2018',
-        governmentId: '432840494'
-    },
-    supportingDocuments: [],
-    status: FamilyAllowanceStatus.ReadyForReview,
-    history: [],
-}]
 
-export class FamilyAllowanceMock implements FamilyAllowanceApi {
+export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAllowanceApi {
 
     async addFamilyAllowanceCase(data: FamilyAllowanceModel): Promise<FamilyAllowanceModel> {
-        const id = '' + (cases.length + 1)
+        const id = '' + (CASES.length + 1)
 
         const newCase = Object.assign({}, data, {id, status: FamilyAllowanceStatus.ReadyForReview})
 
-        cases.push(newCase as FamilyAllowanceContentModel)
+        CASES.push(newCase as FamilyAllowanceContentModel)
 
         return newCase;
     }
 
     async listFamilyAllowanceCases(status?: FamilyAllowanceStatus): Promise<FamilyAllowanceModel[]> {
         if (!status) {
-            return cases
+            return CASES
         }
 
-        return cases.filter(val => val.status === status)
+        return CASES.filter(val => val.status === status)
     }
 
     async getFamilyAllowanceCase(id: string): Promise<FamilyAllowanceContentModel> {
-        const filteredCases: FamilyAllowanceModel[] = cases.filter(val => val.id === id)
+        const filteredCases: FamilyAllowanceModel[] = CASES.filter(val => val.id === id)
 
         if (filteredCases.length === 0) {
             throw new Error(`Case not found: ${id}`)

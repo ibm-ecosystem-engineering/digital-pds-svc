@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import { AppModule } from './app.module';
+import {apiTitle, apiVersion} from "./config";
 
 require('dotenv').config()
 
@@ -10,13 +11,19 @@ async function bootstrap() {
   const server = process.env['SERVER'] || 'http://localhost:3000'
 
   const config = new DocumentBuilder()
-      .setTitle('Digital PDS API')
+      .setTitle(apiTitle)
       .setDescription('APIs for Digital PDS service')
-      .setVersion(process.env['npm_package_version'] || '0.0.0')
+      .setVersion(apiVersion)
       .addServer(server)
       .addSecurity('basic', {
         type: 'http',
         scheme: 'basic',
+      })
+      .addExtension('x-ibm', {
+          annotations: "true",
+          "application-name": apiTitle,
+          "application-id": "digital-pds",
+          "skill-type": "imported"
       })
       .build();
 
