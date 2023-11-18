@@ -32,7 +32,7 @@ export enum FamilyAllowanceStatus {
     Closed = 'Closed'
 }
 
-export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> {
+export interface FamilyAllowanceBasicModel {
     id: string;
     firstName: string;
     lastName: string;
@@ -40,7 +40,10 @@ export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> {
     employeeId: string;
     changeType: string;
     dependent: DependentModel;
-    supportingDocuments: D[];
     status: FamilyAllowanceStatus;
+}
+
+export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> extends FamilyAllowanceBasicModel {
+    supportingDocuments: D[];
     history: ActivityModel[];
 }

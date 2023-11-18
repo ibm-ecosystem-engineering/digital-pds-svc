@@ -523,12 +523,6 @@
             "type": "string",
             "title": "Government ID"
           },
-          "history": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Activity"
-            }
-          },
           "id": {
             "type": "string",
             "title": "ID"
@@ -561,11 +555,9 @@
           "employeeId",
           "firstName",
           "governmentId",
-          "history",
           "id",
           "lastName",
-          "status",
-          "supportingDocuments"
+          "status"
         ]
       },
       "FamilyAllowanceMinimal": {
