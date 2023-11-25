@@ -6,6 +6,8 @@ export abstract class FamilyAllowanceApi {
     abstract listFamilyAllowanceCases(status?: FamilyAllowanceStatus): Promise<FamilyAllowanceModel[]>
     abstract getFamilyAllowanceCase(id: string): Promise<FamilyAllowanceModel>
 
+    abstract getFamilyAllowanceCaseSummary(id: string): Promise<string>
+
     abstract updateFamilyAllowanceCase(id: string, update: Partial<FamilyAllowanceModel>): Promise<FamilyAllowanceModel>
     abstract reviewFamilyAllowanceCase(id: string, needsInfo?: boolean, comment?: string): Promise<FamilyAllowanceModel>
 

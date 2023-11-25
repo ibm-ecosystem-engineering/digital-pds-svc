@@ -11,170 +11,38 @@ import {
     UseInterceptors
 } from "@nestjs/common";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {
-    ApiBasicAuth,
-    ApiExtension,
-    ApiOkResponse,
-    ApiOperation,
-    ApiParam,
-    ApiProperty,
-    ApiQuery,
-    ApiTags
-} from "@nestjs/swagger";
+import {ApiExtension, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags} from "@nestjs/swagger";
 import {getType} from "mime";
 
 import {FamilyAllowanceApi} from "../../services";
+import {FamilyAllowanceBasicModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
 import {
-    ActivityModel,
-    DependentModel,
-    DocumentModel,
-    DocumentWithContentModel, FamilyAllowanceBasicModel,
-    FamilyAllowanceModel,
-    FamilyAllowanceStatus
-} from "../../models";
-import * as inspector from "inspector";
-
-class Dependent implements DependentModel {
-    @ApiProperty({title: 'Birth Date'})
-    birthDate: string;
-    @ApiProperty({title: 'First Name'})
-    firstName: string;
-    @ApiProperty({title: 'Government ID'})
-    governmentId: string;
-    @ApiProperty({title: 'Last Name'})
-    lastName: string;
-}
-
-class Activity implements ActivityModel {
-    @ApiProperty()
-    actor: string;
-    @ApiProperty()
-    comment: string;
-    @ApiProperty()
-    timestamp: string;
-    @ApiProperty()
-    type: string;
-}
-
-class Document implements DocumentModel {
-    @ApiProperty()
-    name: string;
-    @ApiProperty()
-    type: string;
-    @ApiProperty()
-    url: string;
-    @ApiProperty()
-    id: string;
-}
-
-interface ListResult<T> {
-    instances: T[]
-}
-
-class FamilyAllowanceListResult implements ListResult<FamilyAllowanceMinimal> {
-    @ApiProperty({title: 'Results', type: () => [FamilyAllowanceMinimal]})
-    instances: FamilyAllowanceMinimal[]
-}
-
-class FamilyAllowanceDocListResult implements ListResult<Document> {
-    @ApiProperty({title: 'Results', type: () => [Document]})
-    instances: Document[];
-}
-
-class FamilyAllowanceHistoryListResult implements ListResult<Activity> {
-    @ApiProperty({title: 'Results', type: () => [Activity]})
-    instances: Activity[];
-}
-
-class FamilyAllowanceMinimal {
-    @ApiProperty({title: 'Change type'})
-    changeType: string;
-    @ApiProperty({title: 'Dependent name'})
-    dependentName: string;
-    @ApiProperty({title: 'Employee id'})
-    employeeId: string;
-    @ApiProperty({title: 'First name'})
-    firstName: string;
-    @ApiProperty({title: 'Id'})
-    id: string;
-    @ApiProperty({title: 'Last name'})
-    lastName: string;
-    @ApiProperty({title: 'Status'})
-    status: string;
-}
-
-class FamilyAllowanceBasic implements FamilyAllowanceBasicModel {
-    @ApiProperty({title: 'Change Type'})
-    changeType: string;
-    @ApiProperty({type: () => Dependent})
-    dependent: DependentModel;
-    @ApiProperty({title: 'Employee ID'})
-    employeeId: string;
-    @ApiProperty({title: 'First Name'})
-    firstName: string;
-    @ApiProperty({title: 'Government ID'})
-    governmentId: string;
-    @ApiProperty({title: 'ID'})
-    id: string;
-    @ApiProperty({title: 'Last Name'})
-    lastName: string;
-    @ApiProperty({title: 'Status', enum: FamilyAllowanceStatus})
-    status: FamilyAllowanceStatus;
-}
-
-class FamilyAllowance extends FamilyAllowanceBasic implements FamilyAllowanceModel {
-    @ApiProperty({type: () => [Activity]})
-    history: ActivityModel[];
-    @ApiProperty({type: () => [Document]})
-    supportingDocuments: DocumentModel[];
-}
-
-const minimizeFamilyAllowanceModel = (input: FamilyAllowanceModel): FamilyAllowanceMinimal => {
-    return {
-        id: input.id,
-        changeType: input.changeType,
-        employeeId: input.employeeId,
-        firstName: input.firstName,
-        lastName: input.lastName,
-        status: input.status,
-        dependentName: `${input.dependent.firstName} ${input.dependent.lastName}`,
-    }
-}
-
-const familyAllowanceToFamilyAllowanceBasic = (input: FamilyAllowanceModel): FamilyAllowanceBasicModel => {
-    return {
-        id: input.id,
-        changeType: input.changeType,
-        employeeId: input.employeeId,
-        firstName: input.firstName,
-        lastName: input.lastName,
-        status: input.status,
-        governmentId: input.governmentId,
-        dependent: input.dependent,
-    }
-}
-
-const familyAllowanceToDocs = (input: FamilyAllowanceModel): DocumentModel[] => {
-    return (input.supportingDocuments || [])
-        .map(doc => ({name: doc.name, type: doc.type, id: doc.id, url: doc.url}))
-}
-
-const familyAllowanceToHistory = (input: FamilyAllowanceModel): ActivityModel[] => {
-    return input.history || []
-}
-
-const filterSupportingDocuments = (docs: DocumentModel[]): DocumentModel[] => {
-    return docs.map(doc => {
-        const val = Object.assign({}, doc) as DocumentWithContentModel
-
-        delete val.content
-
-        return val
-    })
-}
-const filterResult = (result: FamilyAllowanceModel): FamilyAllowanceModel => {
-    return Object.assign({}, result, {supportingDocuments: filterSupportingDocuments(result.supportingDocuments)})
-}
+    buildSkillId,
+    operationIdAddCase,
+    operationIdAddDocument,
+    operationIdApproveCase,
+    operationIdCloseCase,
+    operationIdDownloadDocument,
+    operationIdGetCase,
+    operationIdGetCaseDocuments,
+    operationIdGetCaseHistory, operationIdGetCaseSummary,
+    operationIdListCases,
+    operationIdNeedsInfo,
+    operationIdSendToCompensationOffice,
+    operationIdUpdateCase
+} from "../../config";
+import {
+    FamilyAllowance,
+    FamilyAllowanceBasic,
+    FamilyAllowanceDocListResult,
+    FamilyAllowanceDocument,
+    FamilyAllowanceHistoryListResult,
+    FamilyAllowanceListResult,
+    familyAllowanceToDocs,
+    familyAllowanceToFamilyAllowanceBasic,
+    familyAllowanceToHistory,
+    minimizeFamilyAllowanceModel
+} from "./family-allowance.apitypes";
 
 @ApiTags('family-allowance')
 @ApiExtension('x-ibm', {annotations: 'true', 'application-id': 'family-allowance'})
@@ -184,7 +52,7 @@ export class FamilyAllowanceController {
 
     @Post()
     @ApiOperation({
-        operationId: 'add-family-allowance-case',
+        operationId: operationIdAddCase,
         summary: 'Add case',
         description: 'Add a family allowance case'
     })
@@ -198,7 +66,7 @@ export class FamilyAllowanceController {
 
     @Get()
     @ApiOperation({
-        operationId: 'list-family-allowance-cases',
+        operationId: operationIdListCases,
         summary: 'List cases',
         description: 'List the family allowance cases'
     })
@@ -213,6 +81,16 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
+    @ApiExtension('x-ibm', {
+        'next-actions': [{
+            skill_id: buildSkillId(operationIdGetCase),
+            utterance: 'show the family allowance case details'
+        }],
+        'nl-intent-examples': [
+            'get family allowance cases',
+            'list family allowance cases'
+        ]
+    })
     async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
         return this.service
             .listFamilyAllowanceCases(status)
@@ -222,7 +100,7 @@ export class FamilyAllowanceController {
 
     @Get(':id')
     @ApiOperation({
-        operationId: 'get-family-allowance-case',
+        operationId: operationIdGetCase,
         summary: 'Get case details',
         description: 'Get the family allowance case for the provided id'
     })
@@ -233,6 +111,21 @@ export class FamilyAllowanceController {
     @ApiOkResponse({
         type: FamilyAllowanceBasic,
         description: "Returns selected case"
+    })
+    @ApiExtension('x-ibm', {
+        'next-action': [{
+            skill_id: buildSkillId(operationIdUpdateCase),
+            utterance: 'update the family allowance case'
+        }, {
+            skill_id: buildSkillId(operationIdNeedsInfo),
+            utterance: 'family allowance case needs info'
+        }, {
+            skill_id: buildSkillId(operationIdSendToCompensationOffice),
+            utterance: 'send the family allowance case to compensation office'
+        }, {
+            skill_id: buildSkillId(operationIdCloseCase),
+            utterance: 'close the family allowance case'
+        }]
     })
     async getFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceBasicModel> {
         console.log('Getting family allowance case: ' + id);
@@ -246,9 +139,44 @@ export class FamilyAllowanceController {
             })
     }
 
+    @Get(':id/summary')
+    @ApiOperation({
+        operationId: operationIdGetCaseSummary,
+        summary: 'Summarize case details',
+        description: 'Get the family allowance case summary for the provided id'
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
+    @ApiOkResponse({
+        type: String,
+        description: "Returns selected case summary"
+    })
+    @ApiExtension('x-ibm', {
+        'next-action': [{
+            skill_id: buildSkillId(operationIdUpdateCase),
+            utterance: 'update the family allowance case'
+        }, {
+            skill_id: buildSkillId(operationIdNeedsInfo),
+            utterance: 'family allowance case needs info'
+        }, {
+            skill_id: buildSkillId(operationIdSendToCompensationOffice),
+            utterance: 'send the family allowance case to compensation office'
+        }, {
+            skill_id: buildSkillId(operationIdCloseCase),
+            utterance: 'close the family allowance case'
+        }]
+    })
+    async getFamilyAllowanceCaseSummary(@Param('id') id: string): Promise<string> {
+        console.log('Getting family allowance case summary: ' + id);
+
+        return this.service.getFamilyAllowanceCaseSummary(id)
+    }
+
     @Get(':id/docs')
     @ApiOperation({
-        operationId: 'get-family-allowance-case-docs',
+        operationId: operationIdGetCaseDocuments,
         summary: 'Get case documents',
         description: 'Get the family allowance docs for the provided id'
     })
@@ -269,7 +197,7 @@ export class FamilyAllowanceController {
 
     @Get(':id/history')
     @ApiOperation({
-        operationId: 'get-family-allowance-case-history',
+        operationId: operationIdGetCaseHistory,
         summary: 'Get case history',
         description: 'Get the family allowance history for the provided id'
     })
@@ -290,7 +218,7 @@ export class FamilyAllowanceController {
 
     @Post(':id')
     @ApiOperation({
-        operationId: 'update-family-allowance-case',
+        operationId: operationIdUpdateCase,
         summary: 'Update case',
         description: 'Update the family allowance case identified by the provided id'
     })
@@ -304,7 +232,7 @@ export class FamilyAllowanceController {
 
     @Get(':id/needsInfo')
     @ApiOperation({
-        operationId: 'family-allowance-case-needs-info',
+        operationId: operationIdNeedsInfo,
         summary: 'Case needs info',
         description: 'Mark the family allowance case identified by the provided id as needing info'
     })
@@ -322,7 +250,7 @@ export class FamilyAllowanceController {
 
     @Get(':id/sendToCompensation')
     @ApiOperation({
-        operationId: 'send-family-allowance-case-to-compensation',
+        operationId: operationIdSendToCompensationOffice,
         summary: 'Send case to compensation office',
         description: 'Send the family allowance case identified by the provided id to the compensation office'
     })
@@ -340,7 +268,7 @@ export class FamilyAllowanceController {
 
     @Get(':id/approve')
     @ApiOperation({
-        operationId: 'approve-family-allowance-case',
+        operationId: operationIdApproveCase,
         summary: 'Approve case',
         description: 'Approve the family allowance case identified by the provided id'
     })
@@ -354,7 +282,7 @@ export class FamilyAllowanceController {
 
     @Get(':id/close')
     @ApiOperation({
-        operationId: 'close-family-allowance-case',
+        operationId: operationIdCloseCase,
         summary: 'Close case',
         description: 'Close the family allowance case identified by the provided id'
     })
@@ -368,18 +296,18 @@ export class FamilyAllowanceController {
 
     @Post(':id/upload')
     @ApiOperation({
-        operationId: 'add-family-allowance-case-document',
+        operationId: operationIdAddDocument,
         summary: 'Add document to case',
         description: 'Add a document to the family allowance case identified by the provided id'
     })
     @UseInterceptors(FileInterceptor('file'))
-    async addDocumentToFamilyAllowanceCase(@Param('id') id: string, @Body() input: Document, @UploadedFile() file: Express.Multer.File): Promise<FamilyAllowanceModel> {
+    async addDocumentToFamilyAllowanceCase(@Param('id') id: string, @Body() input: FamilyAllowanceDocument, @UploadedFile() file: Express.Multer.File): Promise<FamilyAllowanceModel> {
         return this.service.addDocumentToFamilyAllowanceCase(id, input, file.buffer)
     }
 
     @Get(':id/doc/:docId/:name')
     @ApiOperation({
-        operationId: 'download-family-allowance-case-document',
+        operationId: operationIdDownloadDocument,
         summary: 'Download document',
         description: 'Download a document from the family allowance case identified by the provided id'
     })
