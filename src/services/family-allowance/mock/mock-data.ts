@@ -12,13 +12,13 @@ import {
 
 export interface FamilyAllowanceContentModel extends FamilyAllowanceModel<DocumentWithContentModel> {}
 
-const johnDoe: EmployeeModel = {
-    firstName: 'John',
-    lastName: 'Doe',
-    employeeId: '999450',
+const sean: EmployeeModel = {
+    firstName: 'Sean',
+    lastName: 'Sundberg',
+    employeeId: '997498',
     governmentId: '123485895',
-    emailAddress: 'johndoe@bigbox.com',
-    phoneNumber: '2545551212',
+    emailAddress: 'seansund@us.ibm.com',
+    phoneNumber: '5125551212',
     gender: 'M',
     maritalStatus: FamilyAllowanceMaritalStatus.Married,
     mailingAddress: {
@@ -29,16 +29,16 @@ const johnDoe: EmployeeModel = {
         postalCode: '13ZH3'
     },
 }
-const janeDoe: SpouseModel = {
-    firstName: 'Jane',
-    lastName: 'Doe',
+const kelly: SpouseModel = {
+    firstName: 'Kelly',
+    lastName: 'Sundberg',
     governmentId: '123485896',
-    emailAddress: 'janedoe@doehouse.com',
+    emailAddress: 'kelly@thesundbergs.net',
     phoneNumber: '2545551213',
     gender: 'F',
     maritalStatus: FamilyAllowanceMaritalStatus.Married,
     marriedToApplicant: true,
-    employmentStatus: FamilyAllowanceEmploymentStatus.Employed,
+    employmentStatus: FamilyAllowanceEmploymentStatus.SelfEmployed,
     mailingAddress: {
         addressLine1: '1234 Main St',
         city: 'Zurich',
@@ -86,34 +86,28 @@ const irvingMitchell: SpouseModel = {
 
 export const CASES: FamilyAllowanceContentModel[] = [{
     id: '1',
-    applicant: johnDoe,
-    spouse: janeDoe,
-    changeType: FamilyAllowanceType.Birth,
+    applicant: sean,
+    spouse: kelly,
+    changeType: FamilyAllowanceType.Adoption,
     dependents: [{
-        firstName: 'Sally',
-        lastName: 'Doe',
+        firstName: 'Tucker',
+        lastName: 'Sundberg',
         birthDate: '11/07/2023',
         governmentId: '432840493',
-        father: johnDoe,
-        mother: janeDoe,
-        gender: 'F',
+        father: sean,
+        mother: kelly,
+        gender: 'M',
         livesWithApplicant: true,
         relationshipToApplicant: FamilyAllowanceRelationship.Father
     }],
-    supportingDocuments: [{
-        id: '1-1',
-        name: 'test.pdf',
-        url: 'http://bogus/test.pdf',
-        content: Buffer.from('content'),
-        type: 'application/pdf'
-    }],
+    supportingDocuments: [],
     status: FamilyAllowanceStatus.ReadyForReview,
     history: [],
 }, {
     id: '2',
     applicant: sidneyMitchell,
     spouse: irvingMitchell,
-    changeType: FamilyAllowanceType.Adoption,
+    changeType: FamilyAllowanceType.Birth,
     dependents: [{
         firstName: 'Mike',
         lastName: 'Doe',

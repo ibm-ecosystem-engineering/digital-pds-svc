@@ -41,7 +41,7 @@
         ],
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__1.0.2__get-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.3__get-family-allowance-case",
             "utterance": "show the family allowance case details"
           }
         ],
@@ -91,19 +91,19 @@
         "operationId": "get-family-allowance-case",
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__1.0.2__update-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.3__update-family-allowance-case",
             "utterance": "update the family allowance case"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.2__family-allowance-case-needs-info",
+            "skill_id": "Digital-PDS-API__1.0.3__family-allowance-case-needs-info",
             "utterance": "family allowance case needs info"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.2__send-family-allowance-case-to-compensation",
+            "skill_id": "Digital-PDS-API__1.0.3__send-family-allowance-case-to-compensation",
             "utterance": "send the family allowance case to compensation office"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.2__close-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.3__close-family-allowance-case",
             "utterance": "close the family allowance case"
           }
         ],
@@ -175,19 +175,19 @@
         "operationId": "get-family-allowance-case-summary",
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__1.0.2__update-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.3__update-family-allowance-case",
             "utterance": "update the family allowance case"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.2__family-allowance-case-needs-info",
+            "skill_id": "Digital-PDS-API__1.0.3__family-allowance-case-needs-info",
             "utterance": "family allowance case needs info"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.2__send-family-allowance-case-to-compensation",
+            "skill_id": "Digital-PDS-API__1.0.3__send-family-allowance-case-to-compensation",
             "utterance": "send the family allowance case to compensation office"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.2__close-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.3__close-family-allowance-case",
             "utterance": "close the family allowance case"
           }
         ],
@@ -519,7 +519,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
