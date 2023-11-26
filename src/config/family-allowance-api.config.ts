@@ -1,6 +1,6 @@
 
 export const apiTitle: string = 'Digital PDS API';
-export const skillIdPrefix: string = apiTitle.replace(' ', '-')
+export const skillIdPrefix: string = apiTitle.replace(/ /g, '-')
 export const apiVersion = process.env['npm_package_version'] || '0.0.0';
 
 export const operationIdAddCase = 'add-family-allowance-case'

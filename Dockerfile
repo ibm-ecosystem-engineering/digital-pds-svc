@@ -39,4 +39,4 @@ ENV HOST=0.0.0.0 PORT=3000
 
 EXPOSE 3000/tcp
 
-CMD [ "node", "dist/main" ]
+CMD [ "npm", "run", "start:prod" ]

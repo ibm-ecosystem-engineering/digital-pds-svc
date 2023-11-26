@@ -19,12 +19,6 @@ async function bootstrap() {
         type: 'http',
         scheme: 'basic',
       })
-      .addExtension('x-ibm', {
-          annotations: "true",
-          "application-name": apiTitle,
-          "application-id": "digital-pds",
-          "skill-type": "imported"
-      })
       .build();
 
   const document = SwaggerModule.createDocument(app, config);

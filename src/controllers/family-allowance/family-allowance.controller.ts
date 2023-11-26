@@ -46,7 +46,6 @@ import {
 } from "./family-allowance.apitypes";
 
 @ApiTags('family-allowance')
-@ApiExtension('x-ibm', {annotations: 'true', 'application-id': 'family-allowance'})
 @Controller('family-allowance')
 export class FamilyAllowanceController {
     constructor(private readonly service: FamilyAllowanceApi) {}
@@ -82,16 +81,19 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
-    @ApiExtension('x-ibm', {
-        'next-actions': [{
+    @ApiExtension(
+        'x-ibm-next-actions',
+        [{
             skill_id: buildSkillId(operationIdGetCase),
             utterance: 'show the family allowance case details'
-        }],
-        'nl-intent-examples': [
+        }])
+    @ApiExtension(
+        'x-ibm-nl-intent-examples',
+        [
             'get family allowance cases',
             'list family allowance cases'
         ]
-    })
+    )
     async listFamilyAllowanceCase(@Query('status') status?: FamilyAllowanceStatus): Promise<FamilyAllowanceListResult> {
         return this.service
             .listFamilyAllowanceCases(status)
@@ -113,8 +115,9 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceBasic,
         description: "Returns selected case"
     })
-    @ApiExtension('x-ibm', {
-        'next-action': [{
+    @ApiExtension(
+        'x-ibm-next-actions',
+         [{
             skill_id: buildSkillId(operationIdUpdateCase),
             utterance: 'update the family allowance case'
         }, {
@@ -127,7 +130,7 @@ export class FamilyAllowanceController {
             skill_id: buildSkillId(operationIdCloseCase),
             utterance: 'close the family allowance case'
         }]
-    })
+    )
     async getFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceBasicModel> {
         console.log('Getting family allowance case: ' + id);
 
@@ -154,8 +157,9 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceSummary,
         description: "Returns selected case summary"
     })
-    @ApiExtension('x-ibm', {
-        'next-action': [{
+    @ApiExtension(
+        'x-ibm-next-actions',
+        [{
             skill_id: buildSkillId(operationIdUpdateCase),
             utterance: 'update the family allowance case'
         }, {
@@ -168,7 +172,7 @@ export class FamilyAllowanceController {
             skill_id: buildSkillId(operationIdCloseCase),
             utterance: 'close the family allowance case'
         }]
-    })
+    )
     async getFamilyAllowanceCaseSummary(@Param('id') id: string): Promise<FamilyAllowanceSummary> {
         console.log('Getting family allowance case summary: ' + id);
 

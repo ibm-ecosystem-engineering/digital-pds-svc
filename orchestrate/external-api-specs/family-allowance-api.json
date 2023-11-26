@@ -3,7 +3,7 @@
   "paths": {
     "/family-allowance": {
       "post": {
-        "operationId": "add-case",
+        "operationId": "add-family-allowance-case",
         "summary": "Add case",
         "description": "Add a family allowance case",
         "parameters": [],
@@ -34,20 +34,16 @@
         ]
       },
       "get": {
-        "operationId": "list-cases",
-        "x-ibm-operation": {
-          "verb": "retrievewithwhere",
-          "model": "FamilyAllowanceCases"
-        },
-        "x-ibm-next-actions": [
-          {
-            "skill_id": "Digital-PDS-API__0.4.2__get-case",
-            "utterance": "show the family allowance case details"
-          }
-        ],
+        "operationId": "list-family-allowance-cases",
         "x-ibm-nl-intent-examples": [
           "get family allowance cases",
           "list family allowance cases"
+        ],
+        "x-ibm-next-actions": [
+          {
+            "skill_id": "Digital-PDS-API__1.0.1__get-family-allowance-case",
+            "utterance": "show the family allowance case details"
+          }
         ],
         "summary": "List cases",
         "description": "List the family allowance cases",
@@ -92,22 +88,22 @@
     },
     "/family-allowance/{id}": {
       "get": {
-        "operationId": "get-case",
+        "operationId": "get-family-allowance-case",
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__0.4.2__update-case",
+            "skill_id": "Digital-PDS-API__1.0.1__update-family-allowance-case",
             "utterance": "update the family allowance case"
           },
           {
-            "skill_id": "Digital-PDS-API__0.4.2__case-needs-info",
+            "skill_id": "Digital-PDS-API__1.0.1__family-allowance-case-needs-info",
             "utterance": "family allowance case needs info"
           },
           {
-            "skill_id": "Digital-PDS-API__0.4.2__send-case-to-compensation",
-            "utterance": "send the family allowance case to compensation"
+            "skill_id": "Digital-PDS-API__1.0.1__send-family-allowance-case-to-compensation",
+            "utterance": "send the family allowance case to compensation office"
           },
           {
-            "skill_id": "Digital-PDS-API__0.4.2__close-case",
+            "skill_id": "Digital-PDS-API__1.0.1__close-family-allowance-case",
             "utterance": "close the family allowance case"
           }
         ],
@@ -133,7 +129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FamilyAllowance"
+                  "$ref": "#/components/schemas/FamilyAllowanceBasic"
                 }
               }
             }
@@ -144,7 +140,7 @@
         ]
       },
       "post": {
-        "operationId": "update-case",
+        "operationId": "update-family-allowance-case",
         "summary": "Update case",
         "description": "Update the family allowance case identified by the provided id",
         "parameters": [
@@ -174,9 +170,126 @@
         ]
       }
     },
+    "/family-allowance/{id}/summary": {
+      "get": {
+        "operationId": "get-family-allowance-case-summary",
+        "x-ibm-next-actions": [
+          {
+            "skill_id": "Digital-PDS-API__1.0.1__update-family-allowance-case",
+            "utterance": "update the family allowance case"
+          },
+          {
+            "skill_id": "Digital-PDS-API__1.0.1__family-allowance-case-needs-info",
+            "utterance": "family allowance case needs info"
+          },
+          {
+            "skill_id": "Digital-PDS-API__1.0.1__send-family-allowance-case-to-compensation",
+            "utterance": "send the family allowance case to compensation office"
+          },
+          {
+            "skill_id": "Digital-PDS-API__1.0.1__close-family-allowance-case",
+            "utterance": "close the family allowance case"
+          }
+        ],
+        "summary": "Summarize case details",
+        "description": "Get the family allowance case summary for the provided id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The id of the case",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns selected case summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyAllowanceSummary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "family-allowance"
+        ]
+      }
+    },
+    "/family-allowance/{id}/docs": {
+      "get": {
+        "operationId": "get-family-allowance-case-docs",
+        "summary": "Get case documents",
+        "description": "Get the family allowance docs for the provided id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The id of the case",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns docs for selected case",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyAllowanceDocListResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "family-allowance"
+        ]
+      }
+    },
+    "/family-allowance/{id}/history": {
+      "get": {
+        "operationId": "get-family-allowance-case-history",
+        "summary": "Get case history",
+        "description": "Get the family allowance history for the provided id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The id of the case",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns history for selected case",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyAllowanceHistoryListResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "family-allowance"
+        ]
+      }
+    },
     "/family-allowance/{id}/needsInfo": {
       "get": {
-        "operationId": "case-needs-info",
+        "operationId": "family-allowance-case-needs-info",
         "summary": "Case needs info",
         "description": "Mark the family allowance case identified by the provided id as needing info",
         "parameters": [
@@ -216,7 +329,7 @@
     },
     "/family-allowance/{id}/sendToCompensation": {
       "get": {
-        "operationId": "send-case-to-compensation",
+        "operationId": "send-family-allowance-case-to-compensation",
         "summary": "Send case to compensation office",
         "description": "Send the family allowance case identified by the provided id to the compensation office",
         "parameters": [
@@ -256,7 +369,7 @@
     },
     "/family-allowance/{id}/approve": {
       "get": {
-        "operationId": "approve-case",
+        "operationId": "approve-family-allowance-case",
         "summary": "Approve case",
         "description": "Approve the family allowance case identified by the provided id",
         "parameters": [
@@ -288,7 +401,7 @@
     },
     "/family-allowance/{id}/close": {
       "get": {
-        "operationId": "close-case",
+        "operationId": "close-family-allowance-case",
         "summary": "Close case",
         "description": "Close the family allowance case identified by the provided id",
         "parameters": [
@@ -328,7 +441,7 @@
     },
     "/family-allowance/{id}/upload": {
       "post": {
-        "operationId": "add-document",
+        "operationId": "add-family-allowance-case-document",
         "summary": "Add document to case",
         "description": "Add a document to the family allowance case identified by the provided id",
         "parameters": [
@@ -346,7 +459,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Document"
+                "$ref": "#/components/schemas/FamilyAllowanceDocument"
               }
             }
           }
@@ -363,7 +476,7 @@
     },
     "/family-allowance/{id}/doc/{docId}/{name}": {
       "get": {
-        "operationId": "download-document",
+        "operationId": "download-family-allowance-case-document",
         "summary": "Download document",
         "description": "Download a document from the family allowance case identified by the provided id",
         "parameters": [
@@ -406,7 +519,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "0.4.2",
+    "version": "1.0.1",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
@@ -427,31 +540,223 @@
       }
     },
     "schemas": {
-      "Dependent": {
+      "Address": {
         "type": "object",
         "properties": {
-          "birthDate": {
+          "addressLine1": {
             "type": "string",
-            "title": "Birth Date"
+            "title": "Address Line 1"
+          },
+          "addressLine2": {
+            "type": "string",
+            "title": "Address Line 2"
+          },
+          "canton": {
+            "type": "string",
+            "title": "Canton"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "postalCode": {
+            "type": "string",
+            "title": "Postal Code"
+          }
+        },
+        "required": [
+          "addressLine1",
+          "addressLine2",
+          "canton",
+          "city",
+          "country",
+          "postalCode"
+        ]
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "title": "Employee ID"
           },
           "firstName": {
             "type": "string",
             "title": "First Name"
           },
-          "governmentId": {
+          "lastName": {
             "type": "string",
-            "title": "Government ID"
+            "title": "Last Name"
+          },
+          "emailAddress": {
+            "type": "string",
+            "title": "Email Address"
+          },
+          "gender": {
+            "type": "string",
+            "title": "Gender"
+          },
+          "mailingAddress": {
+            "title": "Address",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ]
+          },
+          "maritalStatus": {
+            "type": "string",
+            "title": "Marital Status",
+            "enum": [
+              "Married",
+              "Divorced",
+              "Not Married"
+            ]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "title": "Phone Number"
+          },
+          "relationshipToDependent": {
+            "type": "string",
+            "title": "Relationship to Dependent",
+            "enum": [
+              "Father",
+              "Mother",
+              "StepFather",
+              "StepMother"
+            ]
+          }
+        },
+        "required": [
+          "employeeId",
+          "firstName",
+          "lastName",
+          "emailAddress",
+          "gender",
+          "mailingAddress",
+          "maritalStatus",
+          "phoneNumber",
+          "relationshipToDependent"
+        ]
+      },
+      "Person": {
+        "type": "object",
+        "properties": {
+          "emailAddress": {
+            "type": "string",
+            "title": "Email Address",
+            "format": "email"
+          },
+          "firstName": {
+            "type": "string",
+            "title": "First Name"
+          },
+          "gender": {
+            "type": "string",
+            "title": "Gender"
           },
           "lastName": {
             "type": "string",
             "title": "Last Name"
+          },
+          "mailingAddress": {
+            "title": "Mailing Address",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ]
+          },
+          "maritalStatus": {
+            "type": "string",
+            "title": "Marital Status",
+            "enum": [
+              "Married",
+              "Divorced",
+              "Not Married"
+            ]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "title": "Phone Number",
+            "format": "phone"
+          }
+        },
+        "required": [
+          "emailAddress",
+          "firstName",
+          "gender",
+          "lastName",
+          "mailingAddress",
+          "maritalStatus",
+          "phoneNumber"
+        ]
+      },
+      "Dependent": {
+        "type": "object",
+        "properties": {
+          "birthDate": {
+            "type": "string",
+            "title": "Birth Date",
+            "format": "date"
+          },
+          "firstName": {
+            "type": "string",
+            "title": "First Name"
+          },
+          "lastName": {
+            "type": "string",
+            "title": "Last Name"
+          },
+          "father": {
+            "title": "Father",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Person"
+              }
+            ]
+          },
+          "gender": {
+            "type": "string",
+            "title": "Gender"
+          },
+          "livesWithApplicant": {
+            "type": "boolean",
+            "title": "Lives with Applicant"
+          },
+          "mother": {
+            "title": "Mother",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Person"
+              }
+            ]
+          },
+          "relationshipToApplicant": {
+            "type": "string",
+            "title": "Relationship to applicant",
+            "enum": [
+              "Father",
+              "Mother",
+              "StepFather",
+              "StepMother"
+            ]
           }
         },
         "required": [
           "birthDate",
           "firstName",
-          "governmentId",
-          "lastName"
+          "lastName",
+          "father",
+          "gender",
+          "livesWithApplicant",
+          "mother",
+          "relationshipToApplicant"
         ]
       },
       "Activity": {
@@ -477,7 +782,7 @@
           "type"
         ]
       },
-      "Document": {
+      "FamilyAllowanceDocument": {
         "type": "object",
         "properties": {
           "name": {
@@ -503,33 +808,31 @@
       "FamilyAllowance": {
         "type": "object",
         "properties": {
-          "changeType": {
-            "type": "string",
-            "title": "Change Type"
-          },
-          "dependent": {
-            "$ref": "#/components/schemas/Dependent"
-          },
-          "employeeId": {
-            "type": "string",
-            "title": "Employee ID"
-          },
-          "firstName": {
-            "type": "string",
-            "title": "First Name"
-          },
-          "governmentId": {
-            "x-ibm-show": false,
-            "type": "string",
-            "title": "Government ID"
-          },
           "id": {
             "type": "string",
             "title": "ID"
           },
-          "lastName": {
+          "applicant": {
+            "title": "Applicant",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Employee"
+              }
+            ]
+          },
+          "spouse": {
+            "type": "object",
+            "title": "Spouse"
+          },
+          "changeType": {
             "type": "string",
-            "title": "Last Name"
+            "title": "Change Type"
+          },
+          "dependents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dependent"
+            }
           },
           "status": {
             "type": "string",
@@ -542,22 +845,32 @@
               "Closed"
             ]
           },
+          "lastName": {
+            "type": "string",
+            "title": "Last Name"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            }
+          },
           "supportingDocuments": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Document"
+              "$ref": "#/components/schemas/FamilyAllowanceDocument"
             }
           }
         },
         "required": [
-          "changeType",
-          "dependent",
-          "employeeId",
-          "firstName",
-          "governmentId",
           "id",
+          "applicant",
+          "changeType",
+          "dependents",
+          "status",
           "lastName",
-          "status"
+          "history",
+          "supportingDocuments"
         ]
       },
       "FamilyAllowanceMinimal": {
@@ -569,11 +882,11 @@
             "type": "string",
             "title": "Change type"
           },
-          "dependentName": {
+          "dependentNames": {
             "x-ibm-order": 7,
             "x-ibm-show": true,
             "type": "string",
-            "title": "Dependent name"
+            "title": "Dependent name(s)"
           },
           "employeeId": {
             "x-ibm-order": 4,
@@ -608,7 +921,7 @@
         },
         "required": [
           "changeType",
-          "dependentName",
+          "dependentNames",
           "employeeId",
           "firstName",
           "id",
@@ -626,11 +939,109 @@
       },
       "FamilyAllowanceListResult": {
         "type": "object",
-        "title": "Family Allowance Case List",
         "properties": {
           "instances": {
-            "x-ibm-label": "List of Family Allowance Cases",
-            "$ref": "#/components/schemas/FamilyAllowanceCases"
+            "title": "Results",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyAllowanceMinimal"
+            }
+          }
+        },
+        "required": [
+          "instances"
+        ]
+      },
+      "FamilyAllowanceBasic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "ID"
+          },
+          "applicant": {
+            "title": "Applicant",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Employee"
+              }
+            ]
+          },
+          "spouse": {
+            "type": "object",
+            "title": "Spouse"
+          },
+          "changeType": {
+            "type": "string",
+            "title": "Change Type"
+          },
+          "dependents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dependent"
+            }
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "enum": [
+              "Ready for Review",
+              "Needs Info",
+              "Reviewed",
+              "Approved",
+              "Closed"
+            ]
+          },
+          "lastName": {
+            "type": "string",
+            "title": "Last Name"
+          }
+        },
+        "required": [
+          "id",
+          "applicant",
+          "changeType",
+          "dependents",
+          "status",
+          "lastName"
+        ]
+      },
+      "FamilyAllowanceSummary": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "title": "Family Allowance Case"
+          }
+        },
+        "required": [
+          "summary"
+        ]
+      },
+      "FamilyAllowanceDocListResult": {
+        "type": "object",
+        "properties": {
+          "instances": {
+            "title": "Results",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FamilyAllowanceDocument"
+            }
+          }
+        },
+        "required": [
+          "instances"
+        ]
+      },
+      "FamilyAllowanceHistoryListResult": {
+        "type": "object",
+        "properties": {
+          "instances": {
+            "title": "Results",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            }
           }
         },
         "required": [
