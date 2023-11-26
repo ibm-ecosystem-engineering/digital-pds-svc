@@ -114,7 +114,7 @@ export class FamilyAllowanceController {
         description: "Returns selected case"
     })
     @ApiExtension('x-ibm', {
-        'next-action': [{
+        'next-actions': [{
             skill_id: buildSkillId(operationIdUpdateCase),
             utterance: 'update the family allowance case'
         }, {
@@ -155,7 +155,7 @@ export class FamilyAllowanceController {
         description: "Returns selected case summary"
     })
     @ApiExtension('x-ibm', {
-        'next-action': [{
+        'next-actions': [{
             skill_id: buildSkillId(operationIdUpdateCase),
             utterance: 'update the family allowance case'
         }, {

@@ -35,20 +35,18 @@
       },
       "get": {
         "operationId": "list-family-allowance-cases",
-        "x-ibm-operation": {
-          "verb": "retrievewithwhere",
-          "model": "FamilyAllowanceCases"
+        "x-ibm": {
+          "next-actions": [
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__get-family-allowance-case",
+              "utterance": "show the family allowance case details"
+            }
+          ],
+          "nl-intent-examples": [
+            "get family allowance cases",
+            "list family allowance cases"
+          ]
         },
-        "x-ibm-next-actions": [
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__get-family-allowance-case",
-            "utterance": "show the family allowance case details"
-          }
-        ],
-        "x-ibm-nl-intent-examples": [
-          "get family allowance cases",
-          "list family allowance cases"
-        ],
         "summary": "List cases",
         "description": "List the family allowance cases",
         "parameters": [
@@ -58,8 +56,6 @@
             "in": "query",
             "description": "The status filter for the list",
             "explode": true,
-            "x-ibm-label": "Status",
-            "x-ibm-order": 1,
             "schema": {
               "enum": [
                 "Ready for Review",
@@ -68,7 +64,6 @@
                 "Approved",
                 "Closed"
               ],
-              "x-ibm-important": true,
               "type": "string"
             }
           }
@@ -93,27 +88,26 @@
     "/family-allowance/{id}": {
       "get": {
         "operationId": "get-family-allowance-case",
-        "x-ibm-next-actions": [
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__update-family-allowance-case",
-            "utterance": "update the family allowance case"
-          },
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__family-allowance-case-needs-info",
-            "utterance": "family allowance case needs info"
-          },
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__send-family-allowance-case-to-compensation",
-            "utterance": "send the family allowance case to compensation office"
-          },
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__close-family-allowance-case",
-            "utterance": "close the family allowance case"
-          }
-        ],
-        "x-ibm-nl-intent-examples": [
-          "get family allowance case"
-        ],
+        "x-ibm": {
+          "next-action": [
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__update-family-allowance-case",
+              "utterance": "update the family allowance case"
+            },
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__family-allowance-case-needs-info",
+              "utterance": "family allowance case needs info"
+            },
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__send-family-allowance-case-to-compensation",
+              "utterance": "send the family allowance case to compensation office"
+            },
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__close-family-allowance-case",
+              "utterance": "close the family allowance case"
+            }
+          ]
+        },
         "summary": "Get case details",
         "description": "Get the family allowance case for the provided id",
         "parameters": [
@@ -177,24 +171,26 @@
     "/family-allowance/{id}/summary": {
       "get": {
         "operationId": "get-family-allowance-case-summary",
-        "x-ibm-next-actions": [
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__update-family-allowance-case",
-            "utterance": "update the family allowance case"
-          },
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__family-allowance-case-needs-info",
-            "utterance": "family allowance case needs info"
-          },
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__send-family-allowance-case-to-compensation",
-            "utterance": "send the family allowance case to compensation office"
-          },
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__close-family-allowance-case",
-            "utterance": "close the family allowance case"
-          }
-        ],
+        "x-ibm": {
+          "next-action": [
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__update-family-allowance-case",
+              "utterance": "update the family allowance case"
+            },
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__family-allowance-case-needs-info",
+              "utterance": "family allowance case needs info"
+            },
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__send-family-allowance-case-to-compensation",
+              "utterance": "send the family allowance case to compensation office"
+            },
+            {
+              "skill_id": "Digital-PDS-API__1.0.1__close-family-allowance-case",
+              "utterance": "close the family allowance case"
+            }
+          ]
+        },
         "summary": "Summarize case details",
         "description": "Get the family allowance case summary for the provided id",
         "parameters": [
@@ -214,7 +210,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/FamilyAllowanceSummary"
                 }
               }
             }
@@ -523,7 +519,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
@@ -881,44 +877,30 @@
         "type": "object",
         "properties": {
           "changeType": {
-            "x-ibm-order": 6,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Change type"
           },
           "dependentNames": {
-            "x-ibm-order": 7,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Dependent name(s)"
           },
           "employeeId": {
-            "x-ibm-order": 4,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Employee id"
           },
           "firstName": {
-            "x-ibm-order": 2,
-            "x-ibm-show": true,
             "type": "string",
             "title": "First name"
           },
           "id": {
-            "x-ibm-order": 1,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Id"
           },
           "lastName": {
-            "x-ibm-order": 3,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Last name"
           },
           "status": {
-            "x-ibm-order": 5,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Status"
           }
@@ -932,14 +914,6 @@
           "lastName",
           "status"
         ]
-      },
-      "FamilyAllowanceCases": {
-        "type": "array",
-        "title": "Family Allowance Cases",
-        "x-item-label": "Family Allowance Cases",
-        "items": {
-          "$ref": "#/components/schemas/FamilyAllowanceMinimal"
-        }
       },
       "FamilyAllowanceListResult": {
         "type": "object",
@@ -1010,6 +984,18 @@
           "lastName"
         ]
       },
+      "FamilyAllowanceSummary": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "title": "Family Allowance Case"
+          }
+        },
+        "required": [
+          "summary"
+        ]
+      },
       "FamilyAllowanceDocListResult": {
         "type": "object",
         "properties": {
@@ -1041,5 +1027,11 @@
         ]
       }
     }
+  },
+  "x-ibm": {
+    "annotations": "true",
+    "application-name": "Digital PDS API",
+    "application-id": "digital-pds",
+    "skill-type": "imported"
   }
 }
