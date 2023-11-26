@@ -13,11 +13,13 @@ import {
     FamilyAllowanceStatus,
     FamilyAllowanceType,
     OtherParentModel,
-    PersonModel,
+    PersonModel, RequiredInformationModel,
     SpouseModel
 } from "../../models";
 
 export class Dependent implements DependentModel {
+    @ApiProperty({title: 'ID'})
+    id: string;
     @ApiProperty({title: 'Birth Date', format: 'date'})
     birthDate: string;
     @ApiProperty({title: 'First Name'})
@@ -39,6 +41,8 @@ export class Dependent implements DependentModel {
 }
 
 export class Person implements PersonModel {
+    @ApiProperty({title: 'ID'})
+    id: string;
     @ApiProperty({title: 'Email Address', format: 'email'})
     emailAddress: string;
     @ApiProperty({title: 'First Name'})
@@ -59,6 +63,8 @@ export class Person implements PersonModel {
 }
 
 export class Activity implements ActivityModel {
+    @ApiProperty({title: 'ID'})
+    id: string;
     @ApiProperty()
     actor: string;
     @ApiProperty()
@@ -136,6 +142,8 @@ export class FamilyAllowanceBasic implements FamilyAllowanceBasicModel {
 }
 
 export class Employee implements EmployeeModel {
+    @ApiProperty({title: 'ID'})
+    id: string;
     @ApiProperty({title: 'Employee ID'})
     employeeId: string;
     @ApiHideProperty()
@@ -173,11 +181,22 @@ export class Address implements AddressModel {
     postalCode: string;
 }
 
+export class RequiredInformation implements RequiredInformationModel {
+    @ApiProperty()
+    id: string;
+    @ApiProperty()
+    description: string;
+    @ApiProperty({type: () => Boolean})
+    completed: boolean;
+}
+
 export class FamilyAllowance extends FamilyAllowanceBasic implements FamilyAllowanceModel {
     @ApiProperty({type: () => [Activity]})
     history: ActivityModel[];
     @ApiProperty({type: () => [FamilyAllowanceDocument]})
     supportingDocuments: DocumentModel[];
+    @ApiProperty({type: () => [RequiredInformation]})
+    requiredInformation: RequiredInformationModel[];
 }
 
 export const minimizeFamilyAllowanceModel = (input: FamilyAllowanceModel): FamilyAllowanceMinimal => {
@@ -230,4 +249,11 @@ export const filterResult = (result: FamilyAllowanceModel): FamilyAllowanceModel
 export class FamilyAllowanceSummary {
     @ApiProperty({title: 'Family Allowance Case'})
     summary: string;
+}
+
+export class NeedsInfoInput {
+    @ApiProperty({type: () => [String]})
+    requiredInformation: string[];
+    @ApiProperty()
+    comment?: string;
 }

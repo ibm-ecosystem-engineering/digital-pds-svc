@@ -1,5 +1,6 @@
 
 export interface DependentModel {
+    id: string;
     firstName: string;
     lastName: string;
     birthDate: string;
@@ -7,8 +8,8 @@ export interface DependentModel {
     governmentId: string;
     livesWithApplicant: boolean;
     relationshipToApplicant: FamilyAllowanceRelationship;
-    father: PersonModel;
-    mother: PersonModel;
+    father?: PersonModel;
+    mother?: PersonModel;
 }
 
 export interface DocumentModel {
@@ -23,6 +24,7 @@ export interface DocumentWithContentModel extends DocumentModel {
 }
 
 export interface ActivityModel {
+    id: string;
     timestamp: string;
     actor: string;
     type: string;
@@ -35,6 +37,37 @@ export enum FamilyAllowanceStatus {
     Reviewed = 'Reviewed',
     Approved = 'Approved',
     Closed = 'Closed'
+}
+
+export enum FamilyAllowanceStatusFilter {
+    All = 'All',
+    ReadyForReview = 'Ready for Review',
+    NeedsInfo = 'Needs Info',
+    Reviewed = 'Reviewed',
+    Approved = 'Approved',
+    Closed = 'Closed'
+}
+
+export const mapFamilyAllowanceStatus = (filter?: FamilyAllowanceStatusFilter): FamilyAllowanceStatus | undefined => {
+    if (!filter) {
+        return
+    }
+
+    switch (filter) {
+        case FamilyAllowanceStatusFilter.Approved:
+            return FamilyAllowanceStatus.Approved
+        case FamilyAllowanceStatusFilter.Closed:
+            return FamilyAllowanceStatus.Closed
+        case FamilyAllowanceStatusFilter.Reviewed:
+            return FamilyAllowanceStatus.Reviewed
+        case FamilyAllowanceStatusFilter.NeedsInfo:
+            return FamilyAllowanceStatus.NeedsInfo
+        case FamilyAllowanceStatusFilter.ReadyForReview:
+            return FamilyAllowanceStatus.ReadyForReview
+        case FamilyAllowanceStatusFilter.All:
+        default:
+            return
+    }
 }
 
 export enum FamilyAllowanceType {
@@ -73,6 +106,7 @@ export interface AddressModel {
 }
 
 export interface PersonModel {
+    id: string;
     firstName: string;
     lastName: string;
     governmentId: string;
@@ -105,8 +139,15 @@ export interface FamilyAllowanceBasicModel {
     dependents: DependentModel[];
 }
 
+export interface RequiredInformationModel {
+    id: string;
+    description: string;
+    completed: boolean;
+}
+
 export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> extends FamilyAllowanceBasicModel {
     supportingDocuments: D[];
+    requiredInformation: RequiredInformationModel[];
     history: ActivityModel[];
 }
 

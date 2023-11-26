@@ -2,11 +2,176 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Activity {
+  actor: String!
+  comment: String!
+  id: ID!
+  timestamp: String!
+  type: String!
+}
+
+type Address {
+  addressLine1: String!
+  addressLine2: String
+  canton: String!
+  city: String!
+  country: String!
+  postalCode: String!
+}
+
+type Dependent {
+  birthDate: String!
+  father: Person
+  firstName: String!
+  gender: String!
+  governmentId: String!
+  id: ID!
+  lastName: String!
+  livesWithApplicant: Boolean!
+  mother: Person
+  relationshipToApplicant: FamilyAllowanceRelationship!
+}
+
+type Employee {
+  emailAddress: String!
+  employeeId: String!
+  firstName: String!
+  gender: String!
+  governmentId: String!
+  id: ID!
+  lastName: String!
+  mailingAddress: Address!
+  maritalStatus: FamilyAllowanceMaritalStatus!
+  phoneNumber: String!
+}
+
+type FamilyAllowance {
+  applicant: Employee!
+  changeType: FamilyAllowanceType!
+  dependents: [Dependent!]!
+  history: [Activity!]!
+  id: ID!
+  otherParents: [OtherParent!]
+  requiredInformation: [RequiredInformation!]!
+  spouse: Spouse
+  status: FamilyAllowanceStatus!
+  supportingDocuments: [FamilyAllowanceDocument!]!
+}
+
+"""Document that supports the Family Allowance Case"""
+type FamilyAllowanceDocument {
+  id: ID!
+  name: String!
+  type: String!
+  url: String!
+}
+
+enum FamilyAllowanceEmploymentStatus {
+  Employed
+  SelfEmployed
+  Unemployed
+}
+
+enum FamilyAllowanceMaritalStatus {
+  Divorced
+  Married
+  NotMarried
+}
+
+enum FamilyAllowanceRelationship {
+  Father
+  Mother
+  StepFather
+  StepMother
+}
+
+enum FamilyAllowanceStatus {
+  Approved
+  Closed
+  NeedsInfo
+  ReadyForReview
+  Reviewed
+}
+
+enum FamilyAllowanceStatusFilter {
+  All
+  Approved
+  Closed
+  NeedsInfo
+  ReadyForReview
+  Reviewed
+}
+
+enum FamilyAllowanceType {
+  Adoption
+  Birth
+  ChildAllowance
+  TrainingAllowance
+}
+
 """greeting"""
 type Greeting {
   greeting: String!
 }
 
+type Mutation {
+  markFamilyAllowanceCaseReadyForReview(id: ID!): FamilyAllowance!
+  reviewFamilyAllowanceCase(id: ID!, input: ReviewInput!): FamilyAllowance!
+  updateRequiredInformation(caseId: ID!, completed: Boolean!, infoId: ID!): FamilyAllowance!
+}
+
+type OtherParent {
+  emailAddress: String!
+  employmentStatus: FamilyAllowanceEmploymentStatus!
+  firstName: String!
+  gender: String!
+  governmentId: String!
+  id: ID!
+  lastName: String!
+  mailingAddress: Address!
+  maritalStatus: FamilyAllowanceMaritalStatus!
+  phoneNumber: String!
+}
+
+type Person {
+  emailAddress: String!
+  firstName: String!
+  gender: String!
+  governmentId: String!
+  id: ID!
+  lastName: String!
+  mailingAddress: Address!
+  maritalStatus: FamilyAllowanceMaritalStatus!
+  phoneNumber: String!
+}
+
 type Query {
+  getFamilyAllowanceCase(id: ID!): FamilyAllowance!
   helloWorld: Greeting!
+  listFamilyAllowanceCases(status: FamilyAllowanceStatusFilter): [FamilyAllowance!]!
+}
+
+type RequiredInformation {
+  completed: Boolean!
+  description: String!
+  id: ID!
+}
+
+input ReviewInput {
+  comment: String
+  requiredInformation: [String!]
+}
+
+type Spouse {
+  emailAddress: String!
+  employmentStatus: FamilyAllowanceEmploymentStatus!
+  firstName: String!
+  gender: String!
+  governmentId: String!
+  id: ID!
+  lastName: String!
+  mailingAddress: Address!
+  maritalStatus: FamilyAllowanceMaritalStatus!
+  marriedToApplicant: Boolean!
+  phoneNumber: String!
 }
