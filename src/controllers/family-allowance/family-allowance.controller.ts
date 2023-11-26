@@ -38,6 +38,7 @@ import {
     FamilyAllowanceDocument,
     FamilyAllowanceHistoryListResult,
     FamilyAllowanceListResult,
+    FamilyAllowanceSummary,
     familyAllowanceToDocs,
     familyAllowanceToFamilyAllowanceBasic,
     familyAllowanceToHistory,
@@ -150,7 +151,7 @@ export class FamilyAllowanceController {
         description: 'The id of the case'
     })
     @ApiOkResponse({
-        type: String,
+        type: FamilyAllowanceSummary,
         description: "Returns selected case summary"
     })
     @ApiExtension('x-ibm', {
@@ -168,10 +169,12 @@ export class FamilyAllowanceController {
             utterance: 'close the family allowance case'
         }]
     })
-    async getFamilyAllowanceCaseSummary(@Param('id') id: string): Promise<string> {
+    async getFamilyAllowanceCaseSummary(@Param('id') id: string): Promise<FamilyAllowanceSummary> {
         console.log('Getting family allowance case summary: ' + id);
 
-        return this.service.getFamilyAllowanceCaseSummary(id)
+        return this.service
+            .getFamilyAllowanceCaseSummary(id)
+            .then(summary => ({summary}))
     }
 
     @Get(':id/docs')

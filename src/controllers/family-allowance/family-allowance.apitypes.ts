@@ -226,3 +226,8 @@ export const filterSupportingDocuments = (docs: DocumentModel[]): DocumentModel[
 export const filterResult = (result: FamilyAllowanceModel): FamilyAllowanceModel => {
     return Object.assign({}, result, {supportingDocuments: filterSupportingDocuments(result.supportingDocuments)})
 }
+
+export class FamilyAllowanceSummary {
+    @ApiProperty({title: 'Family Allowance Case'})
+    summary: string;
+}
