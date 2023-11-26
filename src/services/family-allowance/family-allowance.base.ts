@@ -1,21 +1,14 @@
 import {FamilyAllowanceApi} from "./family-allowance.api";
-import {
-    DependentModel,
-    DocumentModel,
-    DocumentWithContentModel,
-    FamilyAllowanceModel,
-    FamilyAllowanceStatus,
-    PersonModel
-} from "../../models";
+import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
 import * as Buffer from "buffer";
-import {FamilyAllowancePrinterMarkdown} from "./printer/family-allowance-printer.markdown";
 import {FamilyAllowancePrinterApi} from "./printer/family-allowance-printer.api";
+import {FamilyAllowancePrinterSimple} from "./printer/family-allowance-printer.simple";
 
 export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
     printer: FamilyAllowancePrinterApi
 
     constructor() {
-        this.printer = new FamilyAllowancePrinterMarkdown()
+        this.printer = new FamilyAllowancePrinterSimple()
     }
 
     abstract addDocumentToFamilyAllowanceCase(id: string, doc: DocumentModel, content: Buffer): Promise<FamilyAllowanceModel>;
