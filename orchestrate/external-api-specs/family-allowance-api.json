@@ -35,19 +35,15 @@
       },
       "get": {
         "operationId": "list-family-allowance-cases",
-        "x-ibm-operation": {
-          "verb": "retrievewithwhere",
-          "model": "FamilyAllowanceCases"
-        },
-        "x-ibm-next-actions": [
-          {
-            "skill_id": "Digital-PDS-API__1.0.0__get-family-allowance-case",
-            "utterance": "show the family allowance case details"
-          }
-        ],
         "x-ibm-nl-intent-examples": [
           "get family allowance cases",
           "list family allowance cases"
+        ],
+        "x-ibm-next-actions": [
+          {
+            "skill_id": "Digital-PDS-API__1.0.1__get-family-allowance-case",
+            "utterance": "show the family allowance case details"
+          }
         ],
         "summary": "List cases",
         "description": "List the family allowance cases",
@@ -95,19 +91,19 @@
         "operationId": "get-family-allowance-case",
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__1.0.0__update-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.1__update-family-allowance-case",
             "utterance": "update the family allowance case"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.0__family-allowance-case-needs-info",
+            "skill_id": "Digital-PDS-API__1.0.1__family-allowance-case-needs-info",
             "utterance": "family allowance case needs info"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.0__send-family-allowance-case-to-compensation",
+            "skill_id": "Digital-PDS-API__1.0.1__send-family-allowance-case-to-compensation",
             "utterance": "send the family allowance case to compensation office"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.0__close-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.1__close-family-allowance-case",
             "utterance": "close the family allowance case"
           }
         ],
@@ -179,19 +175,19 @@
         "operationId": "get-family-allowance-case-summary",
         "x-ibm-next-actions": [
           {
-            "skill_id": "Digital-PDS-API__1.0.0__update-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.1__update-family-allowance-case",
             "utterance": "update the family allowance case"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.0__family-allowance-case-needs-info",
+            "skill_id": "Digital-PDS-API__1.0.1__family-allowance-case-needs-info",
             "utterance": "family allowance case needs info"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.0__send-family-allowance-case-to-compensation",
+            "skill_id": "Digital-PDS-API__1.0.1__send-family-allowance-case-to-compensation",
             "utterance": "send the family allowance case to compensation office"
           },
           {
-            "skill_id": "Digital-PDS-API__1.0.0__close-family-allowance-case",
+            "skill_id": "Digital-PDS-API__1.0.1__close-family-allowance-case",
             "utterance": "close the family allowance case"
           }
         ],
@@ -214,7 +210,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/FamilyAllowanceSummary"
                 }
               }
             }
@@ -523,7 +519,7 @@
   "info": {
     "title": "Digital PDS API",
     "description": "APIs for Digital PDS service",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "contact": {},
     "x-ibm-annotations": "true",
     "x-ibm-application-name": "Digital PDS API",
@@ -1008,6 +1004,18 @@
           "dependents",
           "status",
           "lastName"
+        ]
+      },
+      "FamilyAllowanceSummary": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "title": "Family Allowance Case"
+          }
+        },
+        "required": [
+          "summary"
         ]
       },
       "FamilyAllowanceDocListResult": {

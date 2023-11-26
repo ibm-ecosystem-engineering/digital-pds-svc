@@ -81,11 +81,15 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceListResult,
         description: "Returns list of family allowance cases",
     })
-    @ApiExtension('x-ibm-next-actions', [{
+    @ApiExtension(
+        'x-ibm-next-actions',
+        [{
             skill_id: buildSkillId(operationIdGetCase),
             utterance: 'show the family allowance case details'
         }])
-    @ApiExtension('x-ibm-nl-intent-examples', [
+    @ApiExtension(
+        'x-ibm-nl-intent-examples',
+        [
             'get family allowance cases',
             'list family allowance cases'
         ]
@@ -111,7 +115,9 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceBasic,
         description: "Returns selected case"
     })
-    @ApiExtension('x-ibm-next-actions', [{
+    @ApiExtension(
+        'x-ibm-next-actions',
+         [{
             skill_id: buildSkillId(operationIdUpdateCase),
             utterance: 'update the family allowance case'
         }, {
@@ -151,7 +157,9 @@ export class FamilyAllowanceController {
         type: FamilyAllowanceSummary,
         description: "Returns selected case summary"
     })
-    @ApiExtension('x-ibm-next-actions', [{
+    @ApiExtension(
+        'x-ibm-next-actions',
+        [{
             skill_id: buildSkillId(operationIdUpdateCase),
             utterance: 'update the family allowance case'
         }, {
