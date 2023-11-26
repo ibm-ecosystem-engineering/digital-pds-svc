@@ -38,6 +38,7 @@ import {
     FamilyAllowanceDocument,
     FamilyAllowanceHistoryListResult,
     FamilyAllowanceListResult,
+    FamilyAllowanceSummary,
     familyAllowanceToDocs,
     familyAllowanceToFamilyAllowanceBasic,
     familyAllowanceToHistory,
