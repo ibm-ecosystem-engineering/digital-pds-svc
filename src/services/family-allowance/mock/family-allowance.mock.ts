@@ -1,10 +1,15 @@
 import * as Buffer from "buffer";
 
-import {CASES, FamilyAllowanceContentModel} from "./mock-data";
+import {CASES, FamilyAllowanceContentModel, nextInfoId} from "./mock-data";
 import {FamilyAllowanceApi} from "../family-allowance.api";
-import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../../models";
+import {
+    DocumentModel,
+    DocumentWithContentModel,
+    FamilyAllowanceModel,
+    FamilyAllowanceStatus,
+    RequiredInformationModel
+} from "../../../models";
 import {FamilyAllowanceBase} from "../family-allowance.base";
-
 
 export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAllowanceApi {
 
@@ -70,12 +75,14 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         return selectedCase
     }
 
-    async reviewFamilyAllowanceCase(id: string, needsInfo?: boolean): Promise<FamilyAllowanceModel> {
+    async reviewFamilyAllowanceCase(id: string, needsInfo?: string[]): Promise<FamilyAllowanceModel> {
         const selectedCase = await this.getFamilyAllowanceCase(id)
 
-        const status: FamilyAllowanceStatus = needsInfo ? FamilyAllowanceStatus.NeedsInfo : FamilyAllowanceStatus.Reviewed
+        const status: FamilyAllowanceStatus = needsInfo && needsInfo.length > 0 ? FamilyAllowanceStatus.NeedsInfo : FamilyAllowanceStatus.Reviewed
 
-        Object.assign(selectedCase, {id, status})
+        const requiredInfo: RequiredInformationModel[] = (needsInfo || []).map(description => ({id: nextInfoId(), description, completed: false}))
+
+        Object.assign(selectedCase, {id, status, requiredInformation: selectedCase.requiredInformation.concat(...requiredInfo)})
 
         return selectedCase
     }
@@ -86,6 +93,22 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         const doc = selectedCase.supportingDocuments.filter(val => val.id === docId)
 
         return doc[0]
+    }
+
+    async markFamilyAllowanceCaseReadyForReview(id: string): Promise<FamilyAllowanceModel> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        return Object.assign(selectedCase, {status: FamilyAllowanceStatus.ReadyForReview});
+    }
+
+    async updateRequiredInformationStatus(id: string, requiredInfoId: string, completed: boolean): Promise<FamilyAllowanceModel> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        selectedCase.requiredInformation
+            .filter(info => info.id === requiredInfoId)
+            .forEach(info => info.completed = completed)
+
+        return selectedCase;
     }
 
 }

@@ -42,7 +42,7 @@ import {
     familyAllowanceToDocs,
     familyAllowanceToFamilyAllowanceBasic,
     familyAllowanceToHistory,
-    minimizeFamilyAllowanceModel
+    minimizeFamilyAllowanceModel, NeedsInfoInput
 } from "./family-allowance.apitypes";
 
 @ApiTags('family-allowance')
@@ -237,22 +237,18 @@ export class FamilyAllowanceController {
         return this.service.updateFamilyAllowanceCase(id, update);
     }
 
-    @Get(':id/needsInfo')
+    @Post(':id/needsInfo')
     @ApiOperation({
         operationId: operationIdNeedsInfo,
         summary: 'Case needs info',
         description: 'Mark the family allowance case identified by the provided id as needing info'
     })
-    @ApiQuery({
-        name: 'comment',
-        required: false,
-    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
     })
-    async needsInfoFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceModel> {
-        return this.service.reviewFamilyAllowanceCase(id, true, comment);
+    async needsInfoFamilyAllowanceCase(@Param('id') id: string, @Body() input: NeedsInfoInput): Promise<FamilyAllowanceModel> {
+        return this.service.reviewFamilyAllowanceCase(id, input.requiredInformation, input.comment);
     }
 
     @Get(':id/sendToCompensation')
@@ -270,7 +266,7 @@ export class FamilyAllowanceController {
         description: "Returns updated case"
     })
     async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceModel> {
-        return this.service.reviewFamilyAllowanceCase(id, false, comment);
+        return this.service.reviewFamilyAllowanceCase(id, [], comment);
     }
 
     @Get(':id/approve')

@@ -12,7 +12,10 @@ import {
 
 export interface FamilyAllowanceContentModel extends FamilyAllowanceModel<DocumentWithContentModel> {}
 
+let nextRequiredInfoId = 1
+
 const sean: EmployeeModel = {
+    id: '1',
     firstName: 'Sean',
     lastName: 'Sundberg',
     employeeId: '997498',
@@ -30,6 +33,7 @@ const sean: EmployeeModel = {
     },
 }
 const kelly: SpouseModel = {
+    id: '2',
     firstName: 'Kelly',
     lastName: 'Sundberg',
     governmentId: '123485896',
@@ -49,6 +53,7 @@ const kelly: SpouseModel = {
 }
 
 const sidneyMitchell: EmployeeModel = {
+    id: '3',
     firstName: 'Sidney',
     lastName: 'Mitchell',
     employeeId: '999451',
@@ -66,6 +71,7 @@ const sidneyMitchell: EmployeeModel = {
     }
 }
 const irvingMitchell: SpouseModel = {
+    id: '4',
     firstName: 'Irving',
     lastName: 'Mitchell',
     governmentId: '123485897',
@@ -90,6 +96,7 @@ export const CASES: FamilyAllowanceContentModel[] = [{
     spouse: kelly,
     changeType: FamilyAllowanceType.Adoption,
     dependents: [{
+        id: '5',
         firstName: 'Tucker',
         lastName: 'Sundberg',
         birthDate: '11/07/2023',
@@ -101,6 +108,7 @@ export const CASES: FamilyAllowanceContentModel[] = [{
         relationshipToApplicant: FamilyAllowanceRelationship.Father
     }],
     supportingDocuments: [],
+    requiredInformation: [],
     status: FamilyAllowanceStatus.ReadyForReview,
     history: [],
 }, {
@@ -109,8 +117,9 @@ export const CASES: FamilyAllowanceContentModel[] = [{
     spouse: irvingMitchell,
     changeType: FamilyAllowanceType.Birth,
     dependents: [{
+        id: '6',
         firstName: 'Mike',
-        lastName: 'Doe',
+        lastName: 'Mitchell',
         birthDate: '11/05/2018',
         governmentId: '432840494',
         gender: 'M',
@@ -120,6 +129,11 @@ export const CASES: FamilyAllowanceContentModel[] = [{
         relationshipToApplicant: FamilyAllowanceRelationship.Mother,
     }],
     supportingDocuments: [],
+    requiredInformation: [],
     status: FamilyAllowanceStatus.ReadyForReview,
     history: [],
 }]
+
+export const nextInfoId = (): string => {
+    return '' + (nextRequiredInfoId++)
+}

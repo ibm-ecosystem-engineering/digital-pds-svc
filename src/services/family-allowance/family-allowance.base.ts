@@ -1,8 +1,8 @@
-import {FamilyAllowanceApi} from "./family-allowance.api";
-import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
 import * as Buffer from "buffer";
+import {FamilyAllowanceApi} from "./family-allowance.api";
 import {FamilyAllowancePrinterApi} from "./printer/family-allowance-printer.api";
 import {FamilyAllowancePrinterSimple} from "./printer/family-allowance-printer.simple";
+import {DocumentModel, DocumentWithContentModel, FamilyAllowanceModel, FamilyAllowanceStatus} from "../../models";
 
 export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
     printer: FamilyAllowancePrinterApi
@@ -25,7 +25,7 @@ export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
 
     abstract listFamilyAllowanceCases(status?: FamilyAllowanceStatus): Promise<FamilyAllowanceModel[]>;
 
-    abstract reviewFamilyAllowanceCase(id: string, needsInfo?: boolean, comment?: string): Promise<FamilyAllowanceModel>;
+    abstract reviewFamilyAllowanceCase(id: string, needsInfo?: string[], comment?: string): Promise<FamilyAllowanceModel>;
 
     abstract updateFamilyAllowanceCase(id: string, update: Partial<FamilyAllowanceModel>): Promise<FamilyAllowanceModel>;
 
@@ -34,4 +34,8 @@ export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
 
         return this.printer.print(data)
     }
+
+    abstract markFamilyAllowanceCaseReadyForReview(id: string): Promise<FamilyAllowanceModel>;
+
+    abstract updateRequiredInformationStatus(id: string, requiredInfoId: string, completed: boolean): Promise<FamilyAllowanceModel>;
 }
