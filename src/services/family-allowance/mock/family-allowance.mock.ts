@@ -1,8 +1,8 @@
 import * as Buffer from "buffer";
 
+import {CASES, FamilyAllowanceContentModel, nextDocumentId, nextInfoId} from "./mock-data";
 import {FamilyAllowanceApi} from "../family-allowance.api";
 import {FamilyAllowanceBase} from "../family-allowance.base";
-import {CASES, FamilyAllowanceContentModel, nextDocumentId, nextInfoId} from "./mock-data";
 import {
     DocumentModel,
     DocumentWithContentModel,
