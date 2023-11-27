@@ -1,8 +1,8 @@
 import * as Buffer from "buffer";
 
+import {CASES, FamilyAllowanceContentModel, nextDocumentId, nextInfoId} from "./mock-data";
 import {FamilyAllowanceApi} from "../family-allowance.api";
 import {FamilyAllowanceBase} from "../family-allowance.base";
-import {CASES, FamilyAllowanceContentModel, nextDocumentId, nextInfoId} from "./mock-data";
 import {
     DocumentModel,
     DocumentWithContentModel,
@@ -11,8 +11,19 @@ import {
     RequiredInformationModel
 } from "../../../models";
 import {buildDocumentUrl} from "../../../util";
+import {sendEmailApi, SendEmailApi} from "../../send-email";
+import {updateAk71Api, UpdateAk71Api} from "../../update-ak71";
 
 export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAllowanceApi {
+    emailService: SendEmailApi
+    ak71Service: UpdateAk71Api
+
+    constructor() {
+        super();
+
+        this.emailService = sendEmailApi()
+        this.ak71Service = updateAk71Api()
+    }
 
     async addFamilyAllowanceCase(data: FamilyAllowanceModel): Promise<FamilyAllowanceModel> {
         const id = '' + (CASES.length + 1)
@@ -88,6 +99,20 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         const requiredInfo: RequiredInformationModel[] = (needsInfo || []).map(description => ({id: nextInfoId(), description, completed: false}))
 
         Object.assign(selectedCase, {id, status, requiredInformation: selectedCase.requiredInformation.concat(...requiredInfo)})
+
+        if (status === FamilyAllowanceStatus.NeedsInfo) {
+            await this.emailService.sendNeedsInfoEmail(selectedCase.applicant.emailAddress, id, needsInfo)
+        } else {
+            try {
+                const {id: compensationOfficeId} = await this.ak71Service.sendToAk71(selectedCase)
+
+                Object.assign(selectedCase, {compensationOfficeId})
+            } catch (error) {
+                console.error('Error sending to compensation office: ', {error})
+
+                Object.assign(selectedCase, {status: FamilyAllowanceStatus.ReadyForReview})
+            }
+        }
 
         return selectedCase
     }
