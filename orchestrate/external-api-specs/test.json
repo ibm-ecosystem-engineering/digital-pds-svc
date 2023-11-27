@@ -54,17 +54,14 @@
             "in": "query",
             "description": "The status filter for the list",
             "explode": true,
-            "x-ibm-label": "Status",
-            "x-ibm-order": 1,
             "schema": {
               "enum": [
-                "Ready for Review",
-                "Needs Info",
+                "ReadyForReview",
+                "NeedsInfo",
                 "Reviewed",
                 "Approved",
                 "Closed"
               ],
-              "x-ibm-important": true,
               "type": "string"
             }
           }
@@ -106,9 +103,6 @@
             "skill_id": "Digital-PDS-API__1.2.0__close-family-allowance-case",
             "utterance": "close the family allowance case"
           }
-        ],
-        "x-ibm-nl-intent-examples": [
-          "get family allowance case"
         ],
         "summary": "Get case details",
         "description": "Get the family allowance case for the provided id",
@@ -927,44 +921,30 @@
         "type": "object",
         "properties": {
           "changeType": {
-            "x-ibm-order": 6,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Change type"
           },
           "dependentNames": {
-            "x-ibm-order": 7,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Dependent name(s)"
           },
           "employeeId": {
-            "x-ibm-order": 4,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Employee id"
           },
           "firstName": {
-            "x-ibm-order": 2,
-            "x-ibm-show": true,
             "type": "string",
             "title": "First name"
           },
           "id": {
-            "x-ibm-order": 1,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Id"
           },
           "lastName": {
-            "x-ibm-order": 3,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Last name"
           },
           "status": {
-            "x-ibm-order": 5,
-            "x-ibm-show": true,
             "type": "string",
             "title": "Status"
           }
@@ -978,14 +958,6 @@
           "lastName",
           "status"
         ]
-      },
-      "FamilyAllowanceCases": {
-        "type": "array",
-        "title": "Family Allowance Cases",
-        "x-item-label": "Family Allowance Cases",
-        "items": {
-          "$ref": "#/components/schemas/FamilyAllowanceMinimal"
-        }
       },
       "FamilyAllowanceListResult": {
         "type": "object",

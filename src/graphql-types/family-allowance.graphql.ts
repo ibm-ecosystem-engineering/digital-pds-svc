@@ -155,6 +155,8 @@ export class FamilyAllowance implements FamilyAllowanceModel<FamilyAllowanceDocu
     supportingDocuments: FamilyAllowanceDocument[];
     @Field(() => [RequiredInformation])
     requiredInformation: RequiredInformationModel[];
+    @Field({nullable: true})
+    compensationOfficeId?: string;
 }
 
 @InputType()

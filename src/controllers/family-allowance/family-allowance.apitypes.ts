@@ -195,6 +195,8 @@ export class FamilyAllowance extends FamilyAllowanceBasic implements FamilyAllow
     supportingDocuments: DocumentModel[];
     @ApiProperty({type: () => [RequiredInformation]})
     requiredInformation: RequiredInformationModel[];
+    @ApiPropertyOptional()
+    compensationOfficeId?: string;
 }
 
 export const minimizeFamilyAllowanceModel = (input: FamilyAllowanceModel): FamilyAllowanceMinimal => {

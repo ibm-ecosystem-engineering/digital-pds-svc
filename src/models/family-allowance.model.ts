@@ -170,6 +170,7 @@ export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> e
     supportingDocuments: D[];
     requiredInformation: RequiredInformationModel[];
     history: ActivityModel[];
+    compensationOfficeId?: string;
 }
 
 export interface ReviewInputModel {
