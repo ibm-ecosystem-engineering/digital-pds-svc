@@ -37,7 +37,7 @@ import {
     FamilyAllowanceDocListResult,
     FamilyAllowanceDocument,
     FamilyAllowanceHistoryListResult,
-    FamilyAllowanceListResult,
+    FamilyAllowanceListResult, FamilyAllowanceMinimal,
     FamilyAllowanceSummary,
     familyAllowanceToDocs,
     familyAllowanceToFamilyAllowanceBasic,
@@ -244,11 +244,13 @@ export class FamilyAllowanceController {
         description: 'Mark the family allowance case identified by the provided id as needing info'
     })
     @ApiOkResponse({
-        type: FamilyAllowance,
+        type: FamilyAllowanceMinimal,
         description: "Returns updated case"
     })
-    async needsInfoFamilyAllowanceCase(@Param('id') id: string, @Body() input: NeedsInfoInput): Promise<FamilyAllowanceModel> {
-        return this.service.reviewFamilyAllowanceCase(id, input.requiredInformation, input.comment);
+    async needsInfoFamilyAllowanceCase(@Param('id') id: string, @Body() input: NeedsInfoInput): Promise<FamilyAllowanceMinimal> {
+        return this.service
+            .reviewFamilyAllowanceCase(id, input.requiredInformation, input.comment)
+            .then(minimizeFamilyAllowanceModel)
     }
 
     @Get(':id/sendToCompensation')
@@ -262,11 +264,13 @@ export class FamilyAllowanceController {
         required: false,
     })
     @ApiOkResponse({
-        type: FamilyAllowance,
+        type: FamilyAllowanceMinimal,
         description: "Returns updated case"
     })
-    async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceModel> {
-        return this.service.reviewFamilyAllowanceCase(id, [], comment);
+    async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceMinimal> {
+        return this.service
+            .reviewFamilyAllowanceCase(id, [], comment)
+            .then(minimizeFamilyAllowanceModel)
     }
 
     @Get(':id/approve')
@@ -276,11 +280,13 @@ export class FamilyAllowanceController {
         description: 'Approve the family allowance case identified by the provided id'
     })
     @ApiOkResponse({
-        type: FamilyAllowance,
+        type: FamilyAllowanceMinimal,
         description: "Returns updated case"
     })
-    async approveFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceModel> {
-        return this.service.approveFamilyAllowanceCase(id);
+    async approveFamilyAllowanceCase(@Param('id') id: string): Promise<FamilyAllowanceMinimal> {
+        return this.service
+            .approveFamilyAllowanceCase(id)
+            .then(minimizeFamilyAllowanceModel)
     }
 
     @Get(':id/close')
@@ -290,11 +296,13 @@ export class FamilyAllowanceController {
         description: 'Close the family allowance case identified by the provided id'
     })
     @ApiOkResponse({
-        type: FamilyAllowance,
+        type: FamilyAllowanceMinimal,
         description: "Returns updated case"
     })
-    async closeCase(@Param('id') id: string, @Query('resolution') resolution: string): Promise<FamilyAllowanceModel> {
-        return this.service.closeCase(id, resolution);
+    async closeCase(@Param('id') id: string, @Query('resolution') resolution: string): Promise<FamilyAllowanceMinimal> {
+        return this.service
+            .closeCase(id, resolution)
+            .then(minimizeFamilyAllowanceModel)
     }
 
     @Post(':id/upload')
