@@ -60,6 +60,7 @@ type FamilyAllowance {
 
 """Document that supports the Family Allowance Case"""
 type FamilyAllowanceDocument {
+  description: String
   id: ID!
   name: String!
   type: String!

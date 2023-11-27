@@ -5,7 +5,7 @@ import {
     DocumentModel,
     EmployeeModel, FamilyAllowanceEmploymentStatus, FamilyAllowanceMaritalStatus,
     FamilyAllowanceModel, FamilyAllowanceRelationship, FamilyAllowanceStatus, FamilyAllowanceStatusFilter,
-    FamilyAllowanceType, OtherParentModel, PersonModel, RequiredInformationModel, SpouseModel
+    FamilyAllowanceType, OtherParentModel, PersonModel, RequiredInformationModel, ReviewInputModel, SpouseModel
 } from "../models";
 
 @ObjectType({description: "Document that supports the Family Allowance Case"})
@@ -18,6 +18,8 @@ export class FamilyAllowanceDocument implements DocumentModel {
     type: string;
     @Field()
     url: string;
+    @Field({nullable: true})
+    description?: string;
 }
 
 registerEnumType(FamilyAllowanceType, {name: 'FamilyAllowanceType'})
@@ -156,7 +158,7 @@ export class FamilyAllowance implements FamilyAllowanceModel<FamilyAllowanceDocu
 }
 
 @InputType()
-export class ReviewInput {
+export class ReviewInput implements ReviewInputModel {
     @Field(() => [String], {nullable: true})
     requiredInformation?: string[]
     @Field({nullable: true})

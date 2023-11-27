@@ -13,6 +13,7 @@ import {
 export interface FamilyAllowanceContentModel extends FamilyAllowanceModel<DocumentWithContentModel> {}
 
 let nextRequiredInfoId = 1
+let nextDocumentIdVal = 1
 
 const sean: EmployeeModel = {
     id: '1',
@@ -136,4 +137,8 @@ export const CASES: FamilyAllowanceContentModel[] = [{
 
 export const nextInfoId = (): string => {
     return '' + (nextRequiredInfoId++)
+}
+
+export const nextDocumentId = (): string => {
+    return '' + (nextDocumentIdVal++)
 }
