@@ -13,7 +13,7 @@ import {
     FamilyAllowanceStatus,
     FamilyAllowanceType,
     OtherParentModel,
-    PersonModel, RequiredInformationModel,
+    PersonModel, RequiredInformationModel, serializeFamilyAllowanceStatus, serializeFamilyAllowanceType,
     SpouseModel
 } from "../../models";
 
@@ -75,15 +75,13 @@ export class Activity implements ActivityModel {
     type: string;
 }
 
-export class FamilyAllowanceDocument implements DocumentModel {
+export class FamilyAllowanceDocument implements Omit<DocumentModel, 'id' | 'url'> {
     @ApiProperty()
     name: string;
     @ApiProperty()
     type: string;
-    @ApiProperty()
-    url: string;
-    @ApiProperty()
-    id: string;
+    @ApiPropertyOptional()
+    description?: string;
 }
 
 export interface ListResult<T> {

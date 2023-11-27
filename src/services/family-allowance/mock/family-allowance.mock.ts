@@ -1,7 +1,8 @@
 import * as Buffer from "buffer";
 
-import {CASES, FamilyAllowanceContentModel, nextInfoId} from "./mock-data";
 import {FamilyAllowanceApi} from "../family-allowance.api";
+import {FamilyAllowanceBase} from "../family-allowance.base";
+import {CASES, FamilyAllowanceContentModel, nextDocumentId, nextInfoId} from "./mock-data";
 import {
     DocumentModel,
     DocumentWithContentModel,
@@ -9,7 +10,7 @@ import {
     FamilyAllowanceStatus,
     RequiredInformationModel
 } from "../../../models";
-import {FamilyAllowanceBase} from "../family-allowance.base";
+import {buildDocumentUrl} from "../../../util";
 
 export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAllowanceApi {
 
@@ -41,10 +42,14 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         return filteredCases[0] as FamilyAllowanceContentModel
     }
 
-    async addDocumentToFamilyAllowanceCase(id: string, doc: DocumentModel, content: Buffer): Promise<FamilyAllowanceModel> {
+    async addDocumentToFamilyAllowanceCase(id: string, doc: Omit<DocumentModel, 'id' | 'url'>, content: Buffer): Promise<FamilyAllowanceModel> {
         const selectedCase = await this.getFamilyAllowanceCase(id)
 
-        const docResult = Object.assign({}, doc, {content})
+        const documentId = nextDocumentId()
+
+        const url: string = buildDocumentUrl(id, {id: documentId, name: doc.name})
+
+        const docResult: DocumentWithContentModel = Object.assign({}, doc, {id: documentId, url, content})
 
         selectedCase.supportingDocuments.push(docResult)
 

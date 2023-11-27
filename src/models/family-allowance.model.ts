@@ -1,4 +1,3 @@
-
 export interface DependentModel {
     id: string;
     firstName: string;
@@ -17,6 +16,7 @@ export interface DocumentModel {
     name: string;
     type: string;
     url: string;
+    description?: string;
 }
 
 export interface DocumentWithContentModel extends DocumentModel {
@@ -32,17 +32,27 @@ export interface ActivityModel {
 }
 
 export enum FamilyAllowanceStatus {
-    ReadyForReview = 'Ready for Review',
-    NeedsInfo = 'Needs Info',
+    ReadyForReview = 'ReadyForReview',
+    NeedsInfo = 'NeedsInfo',
     Reviewed = 'Reviewed',
     Approved = 'Approved',
     Closed = 'Closed'
 }
 
+export const serializeFamilyAllowanceStatus = (val: FamilyAllowanceStatus): string => {
+    const keys: string[] = Object.keys(FamilyAllowanceStatus).filter(key => FamilyAllowanceStatus[key] === val)
+
+    if (keys.length === 0) {
+        return val
+    }
+
+    return keys[0]
+}
+
 export enum FamilyAllowanceStatusFilter {
     All = 'All',
-    ReadyForReview = 'Ready for Review',
-    NeedsInfo = 'Needs Info',
+    ReadyForReview = 'ReadyForReview',
+    NeedsInfo = 'NeedsInfo',
     Reviewed = 'Reviewed',
     Approved = 'Approved',
     Closed = 'Closed'
@@ -73,8 +83,19 @@ export const mapFamilyAllowanceStatus = (filter?: FamilyAllowanceStatusFilter): 
 export enum FamilyAllowanceType {
     Birth = 'Birth',
     Adoption = 'Adoption',
-    ChildAllowance = 'Child Allowance',
-    TrainingAllowance = 'Training Allowance'
+    ChildAllowance = 'ChildAllowance',
+    TrainingAllowance = 'TrainingAllowance'
+}
+
+
+export const serializeFamilyAllowanceType = (val: FamilyAllowanceType): string => {
+    const keys: string[] = Object.keys(FamilyAllowanceType).filter(key => FamilyAllowanceType[key] === val)
+
+    if (keys.length === 0) {
+        return val
+    }
+
+    return keys[0]
 }
 
 export enum FamilyAllowanceRelationship {
@@ -86,14 +107,14 @@ export enum FamilyAllowanceRelationship {
 
 export enum FamilyAllowanceEmploymentStatus {
     Employed = 'Employed',
-    SelfEmployed = 'Self Employed',
+    SelfEmployed = 'SelfEmployed',
     Unemployed = 'Unemployed'
 }
 
 export enum FamilyAllowanceMaritalStatus {
     Married = 'Married',
     Divorced = 'Divorced',
-    NotMarried = 'Not Married'
+    NotMarried = 'NotMarried'
 }
 
 export interface AddressModel {
@@ -151,3 +172,7 @@ export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> e
     history: ActivityModel[];
 }
 
+export interface ReviewInputModel {
+    requiredInformation?: string[]
+    comment?: string
+}

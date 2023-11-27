@@ -17,6 +17,6 @@ export abstract class FamilyAllowanceApi {
     abstract approveFamilyAllowanceCase(id: string): Promise<FamilyAllowanceModel>
     abstract closeCase(id: string, resolution: string): Promise<FamilyAllowanceModel>
 
-    abstract addDocumentToFamilyAllowanceCase(id: string, doc: DocumentModel, content: Buffer): Promise<FamilyAllowanceModel>
+    abstract addDocumentToFamilyAllowanceCase(id: string, doc: Omit<DocumentModel, 'id' | 'url'>, content: Buffer): Promise<FamilyAllowanceModel>
     abstract getDocumentForFamilyAllowanceCase(id: string, docId: string): Promise<DocumentWithContentModel>
 }

@@ -1,5 +1,5 @@
 import {
-    Body,
+    Body, ClassSerializerInterceptor,
     Controller,
     Get,
     Param,
@@ -41,7 +41,7 @@ import {
     FamilyAllowanceSummary,
     familyAllowanceToDocs,
     familyAllowanceToFamilyAllowanceBasic,
-    familyAllowanceToHistory,
+    familyAllowanceToHistory, filterSupportingDocuments,
     minimizeFamilyAllowanceModel, NeedsInfoInput
 } from "./family-allowance.apitypes";
 
@@ -303,9 +303,21 @@ export class FamilyAllowanceController {
         summary: 'Add document to case',
         description: 'Add a document to the family allowance case identified by the provided id'
     })
+    @ApiOkResponse({
+        type: FamilyAllowance,
+        description: "Returns updated case"
+    })
     @UseInterceptors(FileInterceptor('file'))
     async addDocumentToFamilyAllowanceCase(@Param('id') id: string, @Body() input: FamilyAllowanceDocument, @UploadedFile() file: Express.Multer.File): Promise<FamilyAllowanceModel> {
-        return this.service.addDocumentToFamilyAllowanceCase(id, input, file.buffer)
+        return this.service
+            .addDocumentToFamilyAllowanceCase(id, input, file.buffer)
+            .then((familyAllowanceCase: FamilyAllowanceModel) => {
+                return Object.assign(
+                    {},
+                    familyAllowanceCase,
+                    {supportingDocuments: filterSupportingDocuments(familyAllowanceCase.supportingDocuments)}
+                )
+            })
     }
 
     @Get(':id/doc/:docId/:name')
