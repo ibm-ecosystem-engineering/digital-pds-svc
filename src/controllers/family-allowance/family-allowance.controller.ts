@@ -21,7 +21,7 @@ import {
     operationIdAddCase,
     operationIdAddDocument,
     operationIdApproveCase,
-    operationIdCloseCase,
+    operationIdCloseCase, operationIdDenyCase,
     operationIdDownloadDocument,
     operationIdGetCase,
     operationIdGetCaseDocuments,
@@ -229,6 +229,10 @@ export class FamilyAllowanceController {
         summary: 'Update case',
         description: 'Update the family allowance case identified by the provided id'
     })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
@@ -242,6 +246,10 @@ export class FamilyAllowanceController {
         operationId: operationIdNeedsInfo,
         summary: 'Case needs info',
         description: 'Mark the family allowance case identified by the provided id as needing info'
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
     })
     @ApiOkResponse({
         type: FamilyAllowanceMinimal,
@@ -263,6 +271,10 @@ export class FamilyAllowanceController {
         name: 'comment',
         required: false,
     })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
     @ApiOkResponse({
         type: FamilyAllowanceMinimal,
         description: "Returns updated case"
@@ -279,6 +291,10 @@ export class FamilyAllowanceController {
         summary: 'Approve case',
         description: 'Approve the family allowance case identified by the provided id'
     })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
     @ApiOkResponse({
         type: FamilyAllowanceMinimal,
         description: "Returns updated case"
@@ -289,11 +305,76 @@ export class FamilyAllowanceController {
             .then(minimizeFamilyAllowanceModel)
     }
 
+    @Get(':id/deny')
+    @ApiOperation({
+        operationId: operationIdDenyCase,
+        summary: 'Deny case',
+        description: 'Deny the family allowance case identified by the provided id'
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
+    @ApiQuery({
+        name: 'comment',
+        required: false,
+    })
+    @ApiOkResponse({
+        type: FamilyAllowanceMinimal,
+        description: "Returns updated case"
+    })
+    async denyFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceMinimal> {
+        return this.service
+            .denyFamilyAllowanceCase(id, comment)
+            .then(minimizeFamilyAllowanceModel)
+    }
+
+    @Get(':id/doc/:docId/:name')
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
+    @ApiParam({
+        name: 'docId',
+        description: 'The id of the document within the case'
+    })
+    @ApiParam({
+        name: 'name',
+        description: 'The name of the document',
+        required: false
+    })
+    @ApiOperation({
+        operationId: operationIdDownloadDocument,
+        summary: 'Download document',
+        description: 'Download a document from the family allowance case identified by the provided id'
+    })
+    async downloadFileByName(
+        @Param('id') id: string,
+        @Param('docId') documentId: string,
+        @Res({ passthrough: true }) res: Response,
+        @Param('name') name?: string,
+    ): Promise<StreamableFile> {
+        const document = await this.service.getDocumentForFamilyAllowanceCase(id, documentId)
+
+        const filename = document.name || name;
+
+        (res as any).set({
+            'Content-Type': getType(filename),
+            'Content-Disposition': `attachment; filename="${filename}"`
+        })
+
+        return new StreamableFile(document.content, {type: getType(filename)});
+    }
+
     @Get(':id/close')
     @ApiOperation({
         operationId: operationIdCloseCase,
         summary: 'Close case',
         description: 'Close the family allowance case identified by the provided id'
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
     })
     @ApiOkResponse({
         type: FamilyAllowanceMinimal,
@@ -311,6 +392,10 @@ export class FamilyAllowanceController {
         summary: 'Add document to case',
         description: 'Add a document to the family allowance case identified by the provided id'
     })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
     @ApiOkResponse({
         type: FamilyAllowance,
         description: "Returns updated case"
@@ -326,30 +411,6 @@ export class FamilyAllowanceController {
                     {supportingDocuments: filterSupportingDocuments(familyAllowanceCase.supportingDocuments)}
                 )
             })
-    }
-
-    @Get(':id/doc/:docId/:name')
-    @ApiOperation({
-        operationId: operationIdDownloadDocument,
-        summary: 'Download document',
-        description: 'Download a document from the family allowance case identified by the provided id'
-    })
-    async downloadFileByName(
-        @Param('id') id: string,
-        @Param('docId') documentId: string,
-        @Param('name') name: string,
-        @Res({ passthrough: true }) res: Response
-    ): Promise<StreamableFile> {
-        const document = await this.service.getDocumentForFamilyAllowanceCase(id, documentId)
-
-        const filename = document.name || name;
-
-        (res as any).set({
-            'Content-Type': getType(filename),
-            'Content-Disposition': `attachment; filename="${filename}"`
-        })
-
-        return new StreamableFile(document.content, {type: getType(filename)});
     }
 
 }

@@ -1,4 +1,5 @@
 import * as Buffer from "buffer";
+
 import {FamilyAllowanceApi} from "./family-allowance.api";
 import {FamilyAllowancePrinterApi} from "./printer/family-allowance-printer.api";
 import {FamilyAllowancePrinterSimple} from "./printer/family-allowance-printer.simple";
@@ -9,6 +10,12 @@ export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
 
     constructor() {
         this.printer = new FamilyAllowancePrinterSimple()
+    }
+
+    async getFamilyAllowanceCaseSummary(id: string): Promise<string> {
+        const data = await this.getFamilyAllowanceCase(id);
+
+        return this.printer.print(data)
     }
 
     abstract addDocumentToFamilyAllowanceCase(id: string, doc: DocumentModel, content: Buffer): Promise<FamilyAllowanceModel>;
@@ -29,13 +36,9 @@ export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
 
     abstract updateFamilyAllowanceCase(id: string, update: Partial<FamilyAllowanceModel>): Promise<FamilyAllowanceModel>;
 
-    async getFamilyAllowanceCaseSummary(id: string): Promise<string> {
-        const data = await this.getFamilyAllowanceCase(id);
-
-        return this.printer.print(data)
-    }
-
     abstract markFamilyAllowanceCaseReadyForReview(id: string): Promise<FamilyAllowanceModel>;
 
     abstract updateRequiredInformationStatus(id: string, requiredInfoId: string, completed: boolean): Promise<FamilyAllowanceModel>;
+
+    abstract denyFamilyAllowanceCase(id: string, comment?: string): Promise<FamilyAllowanceModel>;
 }

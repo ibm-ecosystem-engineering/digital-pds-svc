@@ -13,7 +13,8 @@ import {
     FamilyAllowanceStatus,
     FamilyAllowanceType,
     OtherParentModel,
-    PersonModel, RequiredInformationModel, serializeFamilyAllowanceStatus, serializeFamilyAllowanceType,
+    PersonModel,
+    RequiredInformationModel,
     SpouseModel
 } from "../../models";
 

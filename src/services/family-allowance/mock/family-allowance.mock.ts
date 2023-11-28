@@ -1,9 +1,10 @@
 import * as Buffer from "buffer";
 
-import {CASES, FamilyAllowanceContentModel, nextDocumentId, nextInfoId} from "./mock-data";
+import {CASES, FamilyAllowanceContentModel, nextActivityId, nextDocumentId, nextInfoId} from "./mock-data";
 import {FamilyAllowanceApi} from "../family-allowance.api";
 import {FamilyAllowanceBase} from "../family-allowance.base";
 import {
+    ActivityModel,
     DocumentModel,
     DocumentWithContentModel,
     FamilyAllowanceModel,
@@ -73,6 +74,24 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         selectedCase.status = FamilyAllowanceStatus.Approved
 
         return selectedCase
+    }
+
+    async denyFamilyAllowanceCase(id: string, comment?: string): Promise<FamilyAllowanceModel<DocumentModel>> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        const status = FamilyAllowanceStatus.Denied
+
+        const activity: ActivityModel = {
+            id: nextActivityId(),
+            timestamp: new Date().toISOString(),
+            actor: 'ak71',
+            type: status,
+            comment
+        }
+
+        Object.assign(selectedCase, {status, history: (selectedCase.history || []).concat(activity)})
+
+        return selectedCase;
     }
 
     async closeCase(id: string, resolution: string): Promise<FamilyAllowanceModel> {

@@ -36,17 +36,8 @@ export enum FamilyAllowanceStatus {
     NeedsInfo = 'NeedsInfo',
     Reviewed = 'Reviewed',
     Approved = 'Approved',
+    Denied = 'Denied',
     Closed = 'Closed'
-}
-
-export const serializeFamilyAllowanceStatus = (val: FamilyAllowanceStatus): string => {
-    const keys: string[] = Object.keys(FamilyAllowanceStatus).filter(key => FamilyAllowanceStatus[key] === val)
-
-    if (keys.length === 0) {
-        return val
-    }
-
-    return keys[0]
 }
 
 export enum FamilyAllowanceStatusFilter {
@@ -55,6 +46,7 @@ export enum FamilyAllowanceStatusFilter {
     NeedsInfo = 'NeedsInfo',
     Reviewed = 'Reviewed',
     Approved = 'Approved',
+    Denied = 'Denied',
     Closed = 'Closed'
 }
 
@@ -64,19 +56,10 @@ export const mapFamilyAllowanceStatus = (filter?: FamilyAllowanceStatusFilter): 
     }
 
     switch (filter) {
-        case FamilyAllowanceStatusFilter.Approved:
-            return FamilyAllowanceStatus.Approved
-        case FamilyAllowanceStatusFilter.Closed:
-            return FamilyAllowanceStatus.Closed
-        case FamilyAllowanceStatusFilter.Reviewed:
-            return FamilyAllowanceStatus.Reviewed
-        case FamilyAllowanceStatusFilter.NeedsInfo:
-            return FamilyAllowanceStatus.NeedsInfo
-        case FamilyAllowanceStatusFilter.ReadyForReview:
-            return FamilyAllowanceStatus.ReadyForReview
         case FamilyAllowanceStatusFilter.All:
-        default:
             return
+        default:
+            return FamilyAllowanceStatus[filter]
     }
 }
 

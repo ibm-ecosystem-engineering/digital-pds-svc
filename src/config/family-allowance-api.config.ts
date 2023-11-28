@@ -13,6 +13,7 @@ export const operationIdUpdateCase = 'update-family-allowance-case';
 export const operationIdNeedsInfo = 'family-allowance-case-needs-info';
 export const operationIdSendToCompensationOffice = 'send-family-allowance-case-to-compensation';
 export const operationIdApproveCase = 'approve-family-allowance-case';
+export const operationIdDenyCase = 'deny-family-allowance-case';
 export const operationIdCloseCase = 'close-family-allowance-case';
 export const operationIdAddDocument = 'add-family-allowance-case-document';
 export const operationIdDownloadDocument = 'download-family-allowance-case-document';
