@@ -35,6 +35,7 @@ export enum FamilyAllowanceStatus {
     ReadyForReview = 'ReadyForReview',
     NeedsInfo = 'NeedsInfo',
     Reviewed = 'Reviewed',
+    PendingApproval = 'PendingApproval',
     Approved = 'Approved',
     Denied = 'Denied',
     Closed = 'Closed'
@@ -45,6 +46,7 @@ export enum FamilyAllowanceStatusFilter {
     ReadyForReview = 'ReadyForReview',
     NeedsInfo = 'NeedsInfo',
     Reviewed = 'Reviewed',
+    PendingApproval = 'PendingApproval',
     Approved = 'Approved',
     Denied = 'Denied',
     Closed = 'Closed'
@@ -159,4 +161,10 @@ export interface FamilyAllowanceModel<D extends DocumentModel = DocumentModel> e
 export interface ReviewInputModel {
     requiredInformation?: string[]
     comment?: string
+}
+
+export interface FamilyAllowanceStatusChangeModel {
+    status: FamilyAllowanceStatus;
+    oldStatus?: FamilyAllowanceStatus;
+    data: FamilyAllowanceModel;
 }

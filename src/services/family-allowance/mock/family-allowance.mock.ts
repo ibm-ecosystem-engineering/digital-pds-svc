@@ -1,4 +1,5 @@
 import * as Buffer from "buffer";
+import {Observable, Subject} from "rxjs";
 
 import {CASES, FamilyAllowanceContentModel, nextActivityId, nextDocumentId, nextInfoId} from "./mock-data";
 import {FamilyAllowanceApi} from "../family-allowance.api";
@@ -9,29 +10,29 @@ import {
     DocumentWithContentModel,
     FamilyAllowanceModel,
     FamilyAllowanceStatus,
+    FamilyAllowanceStatusChangeModel,
     RequiredInformationModel
 } from "../../../models";
 import {buildDocumentUrl} from "../../../util";
-import {sendEmailApi, SendEmailApi} from "../../send-email";
-import {updateAk71Api, UpdateAk71Api} from "../../update-ak71";
 
 export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAllowanceApi {
-    emailService: SendEmailApi
-    ak71Service: UpdateAk71Api
+    subject: Subject<FamilyAllowanceStatusChangeModel>
 
     constructor() {
         super();
 
-        this.emailService = sendEmailApi()
-        this.ak71Service = updateAk71Api()
+        this.subject = new Subject()
     }
 
     async addFamilyAllowanceCase(data: FamilyAllowanceModel): Promise<FamilyAllowanceModel> {
         const id = '' + (CASES.length + 1)
 
-        const newCase = Object.assign({}, data, {id, status: FamilyAllowanceStatus.ReadyForReview})
+        const status = FamilyAllowanceStatus.ReadyForReview
+        const newCase = Object.assign({}, data, {id, status})
 
         CASES.push(newCase as FamilyAllowanceContentModel)
+
+        this.subject.next({status, data: newCase})
 
         return newCase;
     }
@@ -71,7 +72,14 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
     async approveFamilyAllowanceCase(id: string): Promise<FamilyAllowanceModel> {
         const selectedCase = await this.getFamilyAllowanceCase(id)
 
-        selectedCase.status = FamilyAllowanceStatus.Approved
+        const oldStatus = selectedCase.status
+        const status = FamilyAllowanceStatus.Approved
+
+        Object.assign(selectedCase, {status})
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({status, oldStatus, data: selectedCase})
+        }
 
         return selectedCase
     }
@@ -79,6 +87,7 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
     async denyFamilyAllowanceCase(id: string, comment?: string): Promise<FamilyAllowanceModel<DocumentModel>> {
         const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
 
+        const oldStatus = selectedCase.status
         const status = FamilyAllowanceStatus.Denied
 
         const activity: ActivityModel = {
@@ -91,13 +100,24 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
 
         Object.assign(selectedCase, {status, history: (selectedCase.history || []).concat(activity)})
 
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({status, oldStatus, data: selectedCase})
+        }
+
         return selectedCase;
     }
 
     async closeCase(id: string, resolution: string): Promise<FamilyAllowanceModel> {
         const selectedCase = await this.getFamilyAllowanceCase(id)
 
-        selectedCase.status = FamilyAllowanceStatus.Closed
+        const oldStatus = selectedCase.status
+        const status = FamilyAllowanceStatus.Closed
+
+        selectedCase.status = status
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({status, oldStatus, data: selectedCase})
+        }
 
         return selectedCase
     }
@@ -105,7 +125,14 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
     async updateFamilyAllowanceCase(id: string, update: Partial<FamilyAllowanceModel>): Promise<FamilyAllowanceModel> {
         const selectedCase = await this.getFamilyAllowanceCase(id)
 
+        const oldStatus = selectedCase.status
+        const status = update.status || oldStatus
+
         Object.assign(selectedCase, update, {id})
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({status, oldStatus, data: selectedCase})
+        }
 
         return selectedCase
     }
@@ -113,24 +140,15 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
     async reviewFamilyAllowanceCase(id: string, needsInfo?: string[]): Promise<FamilyAllowanceModel> {
         const selectedCase = await this.getFamilyAllowanceCase(id)
 
+        const oldStatus = selectedCase.status
         const status: FamilyAllowanceStatus = needsInfo && needsInfo.length > 0 ? FamilyAllowanceStatus.NeedsInfo : FamilyAllowanceStatus.Reviewed
 
         const requiredInfo: RequiredInformationModel[] = (needsInfo || []).map(description => ({id: nextInfoId(), description, completed: false}))
 
         Object.assign(selectedCase, {id, status, requiredInformation: selectedCase.requiredInformation.concat(...requiredInfo)})
 
-        if (status === FamilyAllowanceStatus.NeedsInfo) {
-            await this.emailService.sendNeedsInfoEmail(selectedCase.applicant.emailAddress, id, needsInfo)
-        } else {
-            try {
-                const {id: compensationOfficeId} = await this.ak71Service.sendToAk71(selectedCase)
-
-                Object.assign(selectedCase, {compensationOfficeId})
-            } catch (error) {
-                console.error('Error sending to compensation office: ', {error})
-
-                Object.assign(selectedCase, {status: FamilyAllowanceStatus.ReadyForReview})
-            }
+        if (statusChanged(oldStatus, selectedCase.status)) {
+            this.subject.next({status, oldStatus, data: selectedCase})
         }
 
         return selectedCase
@@ -147,7 +165,16 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
     async markFamilyAllowanceCaseReadyForReview(id: string): Promise<FamilyAllowanceModel> {
         const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
 
-        return Object.assign(selectedCase, {status: FamilyAllowanceStatus.ReadyForReview});
+        const oldStatus = selectedCase.status
+        const status = FamilyAllowanceStatus.ReadyForReview;
+
+        Object.assign(selectedCase, {status});
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({oldStatus, status, data: selectedCase})
+        }
+
+        return selectedCase
     }
 
     async updateRequiredInformationStatus(id: string, requiredInfoId: string, completed: boolean): Promise<FamilyAllowanceModel> {
@@ -160,4 +187,42 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         return selectedCase;
     }
 
+    async updateFamilyAllowanceStatus(id: string, status: FamilyAllowanceStatus): Promise<FamilyAllowanceModel> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        const oldStatus = selectedCase.status
+
+        Object.assign(selectedCase, {status})
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({oldStatus, status, data: selectedCase})
+        }
+
+        return selectedCase
+    }
+
+    async setCompensationOfficeId(id: string, compensationOfficeId: string): Promise<FamilyAllowanceModel> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        const oldStatus = selectedCase.status
+        const status = FamilyAllowanceStatus.PendingApproval
+
+        Object.assign(selectedCase, {compensationOfficeId, status})
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({oldStatus, status, data: selectedCase})
+        }
+
+        return selectedCase
+    }
+
+
+    subscribeToStatusChanges(): Observable<FamilyAllowanceStatusChangeModel> {
+        return this.subject;
+    }
+
+}
+
+const statusChanged = (oldStatus: FamilyAllowanceStatus, status: FamilyAllowanceStatus) => {
+    return oldStatus !== status
 }

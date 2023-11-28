@@ -16,7 +16,7 @@ import {
     PersonModel,
     RequiredInformationModel,
     SpouseModel
-} from "../../models";
+} from "../models";
 
 export class Dependent implements DependentModel {
     @ApiProperty({title: 'ID'})

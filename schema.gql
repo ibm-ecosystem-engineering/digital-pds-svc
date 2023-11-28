@@ -48,6 +48,7 @@ type Employee {
 type FamilyAllowance {
   applicant: Employee!
   changeType: FamilyAllowanceType!
+  compensationOfficeId: String
   dependents: [Dependent!]!
   history: [Activity!]!
   id: ID!
@@ -89,7 +90,9 @@ enum FamilyAllowanceRelationship {
 enum FamilyAllowanceStatus {
   Approved
   Closed
+  Denied
   NeedsInfo
+  PendingApproval
   ReadyForReview
   Reviewed
 }
@@ -98,7 +101,9 @@ enum FamilyAllowanceStatusFilter {
   All
   Approved
   Closed
+  Denied
   NeedsInfo
+  PendingApproval
   ReadyForReview
   Reviewed
 }

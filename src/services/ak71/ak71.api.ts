@@ -22,6 +22,8 @@ export interface Ak71FamilyAllowanceModel {
     type: Ak71FamilyAllowanceType;
 }
 
-export abstract class UpdateAk71Api {
+export abstract class Ak71Api {
     abstract sendToAk71(familyAllowanceCase: FamilyAllowanceModel): Promise<Ak71FamilyAllowanceModel>;
+    abstract getAk71Case(id: string): Promise<Ak71FamilyAllowanceModel>;
+    abstract getAk71Cases(ids: string[]): Promise<Ak71FamilyAllowanceModel[]>;
 }

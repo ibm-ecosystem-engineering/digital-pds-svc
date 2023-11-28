@@ -2,6 +2,7 @@ import {createTransport, Transporter} from 'nodemailer';
 
 import {SendEmailApi} from "./send-email.api";
 import {buildCaseUrl} from "../../util";
+import {RequiredInformationModel} from "../../models";
 
 export interface SmtpConfig {
     host: string;
@@ -41,8 +42,10 @@ export class SendEmailSmtp implements SendEmailApi {
             .catch(console.error);
     }
 
-    async sendNeedsInfoEmail(to: string, caseId: string, needsInfo: string[]): Promise<boolean> {
+    async sendNeedsInfoEmail(to: string, caseId: string, requiredInfo: RequiredInformationModel[]): Promise<boolean> {
         const caseUrl = buildCaseUrl(caseId)
+
+        const needsInfo: string[] = requiredInfo.map(info => info.description)
 
         const {text, html} = buildNeedInfoEmailContent(caseUrl, needsInfo)
 

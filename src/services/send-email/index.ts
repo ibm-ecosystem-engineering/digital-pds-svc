@@ -1,3 +1,5 @@
+import {Provider} from "@nestjs/common";
+
 import {SendEmailApi} from "./send-email.api";
 import {buildSmtpConfig, SendEmailSmtp, SmtpConfig} from "./send-email.smtp";
 import {SendEmailMock} from "./send-email.mock";
@@ -19,4 +21,9 @@ export const sendEmailApi = (): SendEmailApi => {
 
         return _instance = new SendEmailMock()
     }
+}
+
+export const sendEmailProvider: Provider = {
+    provide: SendEmailApi,
+    useFactory: sendEmailApi
 }
