@@ -14,6 +14,7 @@ export interface FamilyAllowanceContentModel extends FamilyAllowanceModel<Docume
 
 let nextRequiredInfoId = 1
 let nextDocumentIdVal = 1
+let nextActivityIdVal = 1
 
 const sean: EmployeeModel = {
     id: '1',
@@ -141,4 +142,8 @@ export const nextInfoId = (): string => {
 
 export const nextDocumentId = (): string => {
     return '' + (nextDocumentIdVal++)
+}
+
+export const nextActivityId = (): string => {
+    return '' + (nextActivityIdVal++)
 }

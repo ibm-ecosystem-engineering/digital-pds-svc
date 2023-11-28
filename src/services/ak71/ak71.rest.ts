@@ -1,10 +1,13 @@
 import axios from "axios";
-import {Ak71FamilyAllowanceModel, UpdateAk71Api} from "./update-ak71.api";
+import {Ak71FamilyAllowanceModel, Ak71Api} from "./ak71.api";
 import {FamilyAllowanceModel} from "../../models";
+import * as url from "url";
+import * as console from "console";
+import {response} from "express";
 
 const ak71BaseUrl = process.env['AK_71_BASE_URL'] || 'https://ak71-mock-svc.19lft24df6mk.us-south.codeengine.appdomain.cloud'
 
-export class UpdateAk71Rest implements UpdateAk71Api {
+export class Ak71Rest implements Ak71Api {
     async sendToAk71(familyAllowanceCase: FamilyAllowanceModel): Promise<Ak71FamilyAllowanceModel> {
         const url = `${ak71BaseUrl}/ak71`
 
@@ -20,5 +23,22 @@ export class UpdateAk71Rest implements UpdateAk71Api {
                 console.log('Response from AK71: ', {result: response.data})
                 return response.data;
             })
+    }
+
+    async getAk71Case(id: string): Promise<Ak71FamilyAllowanceModel> {
+        const url = `${ak71BaseUrl}/ak71/${id}`
+
+        return axios
+            .get<Ak71FamilyAllowanceModel>(url)
+            .then(response => {
+                console.log('Response from AK71: ', {result: response.data})
+                return response.data;
+            })
+    }
+
+    async getAk71Cases(ids: string[]): Promise<Ak71FamilyAllowanceModel[]> {
+        return Promise.all(
+            ids.map(this.getAk71Case)
+        )
     }
 }

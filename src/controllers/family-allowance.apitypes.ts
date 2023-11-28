@@ -13,9 +13,10 @@ import {
     FamilyAllowanceStatus,
     FamilyAllowanceType,
     OtherParentModel,
-    PersonModel, RequiredInformationModel, serializeFamilyAllowanceStatus, serializeFamilyAllowanceType,
+    PersonModel,
+    RequiredInformationModel,
     SpouseModel
-} from "../../models";
+} from "../models";
 
 export class Dependent implements DependentModel {
     @ApiProperty({title: 'ID'})

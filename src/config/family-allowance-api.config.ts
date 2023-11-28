@@ -11,11 +11,14 @@ export const operationIdGetCaseDocuments = 'get-family-allowance-case-docs';
 export const operationIdGetCaseHistory = 'get-family-allowance-case-history';
 export const operationIdUpdateCase = 'update-family-allowance-case';
 export const operationIdNeedsInfo = 'family-allowance-case-needs-info';
+export const operationIdNeedsInfoResult = 'family-allowance-case-needs-info-result';
 export const operationIdSendToCompensationOffice = 'send-family-allowance-case-to-compensation';
 export const operationIdApproveCase = 'approve-family-allowance-case';
+export const operationIdDenyCase = 'deny-family-allowance-case';
 export const operationIdCloseCase = 'close-family-allowance-case';
 export const operationIdAddDocument = 'add-family-allowance-case-document';
 export const operationIdDownloadDocument = 'download-family-allowance-case-document';
+export const operationIdSyncCases = 'sync-family-allowance-cases';
 
 export const buildSkillId = (operationId: string): string => {
     return `${skillIdPrefix}__${apiVersion}__${operationId}`
