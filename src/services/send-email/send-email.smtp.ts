@@ -1,8 +1,8 @@
 import {createTransport, Transporter} from 'nodemailer';
 
 import {SendEmailApi} from "./send-email.api";
-import {buildCaseUrl} from "../../util";
 import {RequiredInformationModel} from "../../models";
+import {buildCaseUrl} from "../../util";
 
 export interface SmtpConfig {
     host: string;
@@ -11,6 +11,11 @@ export interface SmtpConfig {
         user: string;
         pass: string;
     }
+}
+
+interface EmailContent {
+    text: string;
+    html: string;
 }
 
 export const buildSmtpConfig = (): SmtpConfig => {
@@ -63,9 +68,29 @@ export class SendEmailSmtp implements SendEmailApi {
             return false
         });
     }
+
+    async sendPendingBookingsEmail(to: string, caseId: string): Promise<boolean> {
+        const caseUrl = buildCaseUrl(caseId)
+
+        const {text, html} = buildPendingBookingsEmailContent(caseUrl)
+
+        return this.service.sendMail({
+            from: '"Digital PDS" <ibmdigitalpds@gmail.com>', // sender address
+            to, // list of receivers
+            subject: "Family Allowance case - Bookings", // subject line
+            text, // plain text body
+            html, // html body
+        }).then(info => {
+            console.log({info});
+            return true
+        }).catch(err => {
+            console.error(err)
+            return false
+        });
+    }
 }
 
-const buildNeedInfoEmailContent = (caseUrl: string, needsInfo: string[]): {text: string, html: string} => {
+const buildNeedInfoEmailContent = (caseUrl: string, needsInfo: string[]): EmailContent => {
     const text = `
 We have reviewed your Family Allowance application and have identified the following missing information:
 
@@ -85,6 +110,31 @@ ${needsInfo.map(val => `<li>${val}</li>`).join('\n')}
 </ul>
 <p>
 Use the link below to provide the necessary information so we can complete your application - <a href="${caseUrl}">Digital PDS</a>
+</p>
+<p>
+Thank you,
+IBM Payroll
+</p>
+`
+
+    return {text, html}
+}
+
+const buildPendingBookingsEmailContent = (caseUrl: string): EmailContent => {
+    const text = `
+A Family Allowance case has been approved by the compensation office and needs to have the bookings completed.
+ 
+Use the link below to view the details of the Family Allowance case and update the status of the case once the bookings have been completed: ${caseUrl}
+
+Thank you,
+IBM Payroll
+`
+    const html = `
+<p>
+A Family Allowance case has been approved by the compensation office and needs to have the bookings completed.
+</p>
+<p> 
+Use the link below to view the details of the Family Allowance case and update the status of the case once the bookings have been completed: ${caseUrl}
 </p>
 <p>
 Thank you,

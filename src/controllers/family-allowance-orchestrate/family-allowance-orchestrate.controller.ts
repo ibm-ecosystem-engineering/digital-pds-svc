@@ -54,10 +54,15 @@ export class FamilyAllowanceOrchestrateController {
     })
     @ApiExtension(
         'x-ibm-next-actions',
-        [{
-            skill_id: buildSkillId(operationIdGetCase),
-            utterance: 'show the family allowance case details'
-        }])
+        [
+            {
+                skill_id: buildSkillId(operationIdGetCase),
+                utterance: 'show the family allowance case details'
+            },
+            {
+                skill_id: buildSkillId(operationIdGetCaseSummary),
+                utterance: 'show the family allowance case summary'
+            }])
     @ApiExtension(
         'x-ibm-nl-intent-examples',
         [
@@ -131,14 +136,14 @@ export class FamilyAllowanceOrchestrateController {
     @ApiExtension(
         'x-ibm-next-actions',
         [{
-            skill_id: buildSkillId(operationIdUpdateCase),
-            utterance: 'update the family allowance case'
-        }, {
             skill_id: buildSkillId(operationIdNeedsInfo),
             utterance: 'family allowance case needs info'
         }, {
             skill_id: buildSkillId(operationIdSendToCompensationOffice),
             utterance: 'send the family allowance case to compensation office'
+        }, {
+            skill_id: buildSkillId(operationIdSendToBookings),
+            utterance: 'send the family allowance case to bookings'
         }, {
             skill_id: buildSkillId(operationIdCloseCase),
             utterance: 'close the family allowance case'
