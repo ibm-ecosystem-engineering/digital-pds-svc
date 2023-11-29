@@ -255,6 +255,6 @@ export class FamilyAllowanceSummary {
 export class NeedsInfoInput {
     @ApiProperty({type: () => [String]})
     requiredInformation: string[];
-    @ApiProperty()
+    @ApiPropertyOptional()
     comment?: string;
 }
