@@ -53,4 +53,8 @@ export abstract class FamilyAllowanceBase implements FamilyAllowanceApi {
     abstract subscribeToStatusChanges(): Observable<FamilyAllowanceStatusChangeModel>;
 
     abstract updateFamilyAllowanceStatus(id: string, status: FamilyAllowanceStatus): Promise<FamilyAllowanceModel>;
+
+    abstract sendFamilyAllowanceCaseForBooking(id: string, comment?: string): Promise<FamilyAllowanceModel>;
+
+    abstract markFamilyAllowanceCaseBookingsComplete(id: string, comment?: string): Promise<FamilyAllowanceModel>;
 }

@@ -216,6 +216,35 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         return selectedCase
     }
 
+    async sendFamilyAllowanceCaseForBooking(id: string, comment?: string): Promise<FamilyAllowanceModel> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        const oldStatus = selectedCase.status
+        const status = FamilyAllowanceStatus.PendingBookings
+
+        Object.assign(selectedCase, {status})
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({oldStatus, status, data: selectedCase})
+        }
+
+        return selectedCase
+    }
+
+    async markFamilyAllowanceCaseBookingsComplete(id: string, comment?: string): Promise<FamilyAllowanceModel> {
+        const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
+
+        const oldStatus = selectedCase.status
+        const status = FamilyAllowanceStatus.CompletedBookings
+
+        Object.assign(selectedCase, {status})
+
+        if (statusChanged(oldStatus, status)) {
+            this.subject.next({oldStatus, status, data: selectedCase})
+        }
+
+        return selectedCase
+    }
 
     subscribeToStatusChanges(): Observable<FamilyAllowanceStatusChangeModel> {
         return this.subject;

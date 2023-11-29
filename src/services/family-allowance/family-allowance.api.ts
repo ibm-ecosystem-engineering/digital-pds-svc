@@ -6,6 +6,7 @@ import {
     FamilyAllowanceStatusChangeModel
 } from "../../models";
 import {Observable} from "rxjs";
+import {FamilyAllowanceMinimal} from "../../controllers/family-allowance.apitypes";
 
 export abstract class FamilyAllowanceApi {
     abstract addFamilyAllowanceCase(newCase: FamilyAllowanceModel): Promise<FamilyAllowanceModel>
@@ -20,6 +21,8 @@ export abstract class FamilyAllowanceApi {
 
     abstract reviewFamilyAllowanceCase(id: string, needsInfo?: string[], comment?: string): Promise<FamilyAllowanceModel>
     abstract setCompensationOfficeId(id: string, compensationOfficeId: string): Promise<FamilyAllowanceModel>
+    abstract sendFamilyAllowanceCaseForBooking(id: string, comment?: string): Promise<FamilyAllowanceModel>
+    abstract markFamilyAllowanceCaseBookingsComplete(id: string, comment?: string): Promise<FamilyAllowanceModel>
 
     abstract updateRequiredInformationStatus(id: string, requiredInfoId: string, completed: boolean): Promise<FamilyAllowanceModel>
     abstract markFamilyAllowanceCaseReadyForReview(id: string): Promise<FamilyAllowanceModel>

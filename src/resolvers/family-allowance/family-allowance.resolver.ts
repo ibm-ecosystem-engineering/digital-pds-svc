@@ -41,6 +41,14 @@ export class FamilyAllowanceResolver {
     }
 
     @Mutation(() => FamilyAllowance)
+    async markFamilyAllowanceCaseBookingsComplete(
+        @Args('id', {type: () => ID}) id: string,
+        @Args('comment', {nullable: true}) comment?: string
+    ): Promise<FamilyAllowanceModel> {
+        return this.service.markFamilyAllowanceCaseBookingsComplete(id, comment)
+    }
+
+    @Mutation(() => FamilyAllowance)
     async reviewFamilyAllowanceCase(
         @Args('id', {type: () => ID}) id: string,
         @Args('input', {type: () => ReviewInput}) input: ReviewInput
