@@ -23,7 +23,7 @@ import {
     operationIdGetCaseHistory,
     operationIdGetCaseSummary,
     operationIdListCases,
-    operationIdNeedsInfo,
+    operationIdNeedsInfo, operationIdSendToBookings,
     operationIdSendToCompensationOffice,
     operationIdUpdateCase
 } from "../../config";
@@ -253,6 +253,30 @@ export class FamilyAllowanceOrchestrateController {
     async reviewFamilyAllowanceCase(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceMinimal> {
         return this.service
             .reviewFamilyAllowanceCase(id, [], comment)
+            .then(minimizeFamilyAllowanceModel)
+    }
+
+    @Get(':id/sendToBookings')
+    @ApiOperation({
+        operationId: operationIdSendToBookings,
+        summary: 'Send case for bookings',
+        description: 'Send the family allowance case identified by the provided id for bookings'
+    })
+    @ApiQuery({
+        name: 'comment',
+        required: false,
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'The id of the case'
+    })
+    @ApiOkResponse({
+        type: FamilyAllowanceMinimal,
+        description: "Returns updated case"
+    })
+    async sendFamilyAllowanceCaseForBooking(@Param('id') id: string, @Query('comment') comment?: string): Promise<FamilyAllowanceMinimal> {
+        return this.service
+            .sendFamilyAllowanceCaseForBooking(id, comment)
             .then(minimizeFamilyAllowanceModel)
     }
 
