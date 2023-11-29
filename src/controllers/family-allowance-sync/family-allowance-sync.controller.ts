@@ -38,7 +38,7 @@ export class FamilyAllowanceSyncController {
     })
     async syncFamilyAllowanceCases(): Promise<FamilyAllowanceSyncResult> {
 
-        const cases = await this.service.listFamilyAllowanceCases(FamilyAllowanceStatus.Reviewed)
+        const cases = await this.service.listFamilyAllowanceCases(FamilyAllowanceStatus.PendingApproval)
 
         const casesWithCompensationOfficeId = cases.filter(val => !!val.compensationOfficeId)
         const missingCompensationOfficeIdCount: number = cases.filter(val => !val.compensationOfficeId).length
