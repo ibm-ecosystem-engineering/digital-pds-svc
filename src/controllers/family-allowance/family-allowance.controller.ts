@@ -11,8 +11,6 @@ import {FamilyAllowanceApi} from "../../services";
 @ApiTags('family-allowance')
 @Controller('family-allowance')
 export class FamilyAllowanceController {
-    constructor(private readonly service: FamilyAllowanceApi) {}
-
     @Get(':id/doc/:docId/:name')
     @ApiParam({
         name: 'id',
@@ -25,7 +23,7 @@ export class FamilyAllowanceController {
     @ApiParam({
         name: 'name',
         description: 'The name of the document',
-        required: false
+        required: true
     })
     @ApiOperation({
         operationId: operationIdDownloadDocument,
@@ -35,8 +33,8 @@ export class FamilyAllowanceController {
     async downloadFileByName(
         @Param('id') id: string,
         @Param('docId') documentId: string,
+        @Param('name') name: string,
         @Res({ passthrough: true }) res: Response,
-        @Param('name') name?: string,
     ): Promise<StreamableFile> {
         const document = await this.service.getDocumentForFamilyAllowanceCase(id, documentId)
 
@@ -49,6 +47,8 @@ export class FamilyAllowanceController {
 
         return new StreamableFile(document.content, {type: getType(filename)});
     }
+
+    constructor(private readonly service: FamilyAllowanceApi) {}
 
     @Post(':id/upload')
     @ApiOperation({
