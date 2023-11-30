@@ -90,9 +90,11 @@ enum FamilyAllowanceRelationship {
 enum FamilyAllowanceStatus {
   Approved
   Closed
+  CompletedBookings
   Denied
   NeedsInfo
   PendingApproval
+  PendingBookings
   ReadyForReview
   Reviewed
 }
@@ -101,9 +103,11 @@ enum FamilyAllowanceStatusFilter {
   All
   Approved
   Closed
+  CompletedBookings
   Denied
   NeedsInfo
   PendingApproval
+  PendingBookings
   ReadyForReview
   Reviewed
 }
@@ -121,6 +125,7 @@ type Greeting {
 }
 
 type Mutation {
+  markFamilyAllowanceCaseBookingsComplete(comment: String, id: ID!): FamilyAllowance!
   markFamilyAllowanceCaseReadyForReview(id: ID!): FamilyAllowance!
   reviewFamilyAllowanceCase(id: ID!, input: ReviewInput!): FamilyAllowance!
   updateRequiredInformation(caseId: ID!, completed: Boolean!, infoId: ID!): FamilyAllowance!
