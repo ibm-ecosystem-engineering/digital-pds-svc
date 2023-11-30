@@ -465,7 +465,7 @@
     },
     "/family-allowance-orchestrate/{id}/sendToBookings": {
       "get": {
-        "operationId": "send-family-allowance-case-to-compensation",
+        "operationId": "send-family-allowance-case-to-bookings",
         "summary": "Send case for bookings",
         "description": "Send the family allowance case identified by the provided id for bookings",
         "parameters": [
