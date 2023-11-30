@@ -235,7 +235,7 @@ export class FamilyAllowanceMock extends FamilyAllowanceBase implements FamilyAl
         const selectedCase: FamilyAllowanceContentModel = await this.getFamilyAllowanceCase(id)
 
         const oldStatus = selectedCase.status
-        const status = FamilyAllowanceStatus.CompletedBookings
+        const status = FamilyAllowanceStatus.Closed
 
         Object.assign(selectedCase, {status})
 

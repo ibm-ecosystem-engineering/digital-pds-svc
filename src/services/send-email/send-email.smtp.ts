@@ -88,6 +88,46 @@ export class SendEmailSmtp implements SendEmailApi {
             return false
         });
     }
+
+    async sendApprovedEmail(to: string, caseId: string): Promise<boolean> {
+        const caseUrl = buildCaseUrl(caseId)
+
+        const {text, html} = buildApprovedEmailContent(caseUrl)
+
+        return this.service.sendMail({
+            from: '"Digital PDS" <ibmdigitalpds@gmail.com>', // sender address
+            to, // list of receivers
+            subject: "Family Allowance case - Approved", // subject line
+            text, // plain text body
+            html, // html body
+        }).then(info => {
+            console.log({info});
+            return true
+        }).catch(err => {
+            console.error(err)
+            return false
+        });
+    }
+
+    async sendDeniedEmail(to: string, caseId: string): Promise<boolean> {
+        const caseUrl = buildCaseUrl(caseId)
+
+        const {text, html} = buildDeniedEmailContent(caseUrl)
+
+        return this.service.sendMail({
+            from: '"Digital PDS" <ibmdigitalpds@gmail.com>', // sender address
+            to, // list of receivers
+            subject: "Family Allowance case - Denied", // subject line
+            text, // plain text body
+            html, // html body
+        }).then(info => {
+            console.log({info});
+            return true
+        }).catch(err => {
+            console.error(err)
+            return false
+        });
+    }
 }
 
 const buildNeedInfoEmailContent = (caseUrl: string, needsInfo: string[]): EmailContent => {
@@ -135,6 +175,51 @@ A Family Allowance case has been approved by the compensation office and needs t
 </p>
 <p> 
 Use the link below to view the details of the Family Allowance case and update the status of the case once the bookings have been completed: ${caseUrl}
+</p>
+<p>
+Thank you,
+IBM Payroll
+</p>
+`
+
+    return {text, html}
+}
+
+const buildApprovedEmailContent = (url: string): EmailContent => {
+    const text = `
+Your application for a Family Allowance has been approved. We will begin the steps to apply the changes to your payroll account.
+
+Thank you,
+IBM Payroll
+`
+    const html = `
+<p>
+Your Family Allowance application has been approved. We will begin the steps to apply the changes to your payroll account.
+</p>
+<p>
+Thank you,
+IBM Payroll
+</p>
+`
+
+    return {text, html}
+}
+
+const buildDeniedEmailContent = (url: string): EmailContent => {
+    const text = `
+Your Family Allowance application has been denied. You may view the following for more details: ${url}
+
+If you believe the application was denied in error, please contact XXX to dispute the outcome.
+
+Thank you,
+IBM Payroll
+`
+    const html = `
+<p>
+Your Family Allowance application has been denied. You may view the following for more details: ${url}
+</p>
+<p>
+If you believe the application was denied in error, please contact XXX to dispute the outcome.
 </p>
 <p>
 Thank you,

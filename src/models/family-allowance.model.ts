@@ -39,7 +39,6 @@ export enum FamilyAllowanceStatus {
     Approved = 'Approved',
     Denied = 'Denied',
     PendingBookings = 'PendingBookings',
-    CompletedBookings = 'CompletedBookings',
     Closed = 'Closed'
 }
 
@@ -52,7 +51,6 @@ export enum FamilyAllowanceStatusFilter {
     Approved = 'Approved',
     Denied = 'Denied',
     PendingBookings = 'PendingBookings',
-    CompletedBookings = 'CompletedBookings',
     Closed = 'Closed'
 }
 
