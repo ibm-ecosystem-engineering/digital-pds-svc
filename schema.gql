@@ -90,7 +90,6 @@ enum FamilyAllowanceRelationship {
 enum FamilyAllowanceStatus {
   Approved
   Closed
-  CompletedBookings
   Denied
   NeedsInfo
   PendingApproval
@@ -103,7 +102,6 @@ enum FamilyAllowanceStatusFilter {
   All
   Approved
   Closed
-  CompletedBookings
   Denied
   NeedsInfo
   PendingApproval

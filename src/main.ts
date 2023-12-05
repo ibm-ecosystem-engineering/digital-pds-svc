@@ -1,7 +1,8 @@
-import { NestFactory } from '@nestjs/core';
-import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
-import { AppModule } from './app.module';
+import {NestFactory} from '@nestjs/core';
+import {DocumentBuilder, OpenAPIObject, SwaggerModule} from "@nestjs/swagger";
+import {AppModule} from './app.module';
 import {apiTitle, apiVersion} from "./config";
+import {enhanceApiSpec} from "./controllers";
 
 require('dotenv').config()
 
@@ -21,15 +22,23 @@ async function bootstrap() {
       })
       .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
 
-  document.info['x-ibm-annotations'] = 'true';
-  document.info['x-ibm-application-name'] = document.info.title;
-  document.info['x-ibm-application-id'] = 'digital-pds';
-  document.info['x-ibm-skill-type'] = 'imported';
+  addApiSpecInfoExtensions(document);
+  enhanceApiSpec(document);
 
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
 bootstrap().catch(err => console.error(err));
+
+
+const addApiSpecInfoExtensions = (document: OpenAPIObject): OpenAPIObject => {
+    document.info['x-ibm-annotations'] = 'true';
+    document.info['x-ibm-application-name'] = document.info.title;
+    document.info['x-ibm-application-id'] = 'digital-pds';
+    document.info['x-ibm-skill-type'] = 'imported';
+
+    return document;
+}
