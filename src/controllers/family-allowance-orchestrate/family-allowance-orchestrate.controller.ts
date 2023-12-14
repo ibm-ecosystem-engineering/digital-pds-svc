@@ -38,8 +38,8 @@ export class FamilyAllowanceOrchestrateController {
     @Get()
     @ApiOperation({
         operationId: operationIdListCases,
-        summary: 'List cases',
-        description: 'List the family allowance cases'
+        summary: 'List family allowance cases',
+        description: 'List family allowance cases'
     })
     @ApiQuery({
         name: "status",
@@ -80,7 +80,7 @@ export class FamilyAllowanceOrchestrateController {
     @Get(':id')
     @ApiOperation({
         operationId: operationIdGetCase,
-        summary: 'Get case details',
+        summary: 'Get family allowance case details',
         description: 'Get the family allowance case for the provided id'
     })
     @ApiParam({
@@ -122,8 +122,8 @@ export class FamilyAllowanceOrchestrateController {
     @Get(':id/summary')
     @ApiOperation({
         operationId: operationIdGetCaseSummary,
-        summary: 'Summarize case details',
-        description: 'Get the family allowance case summary for the provided id'
+        summary: 'View family allowance case',
+        description: 'View the family allowance case for the provided id'
     })
     @ApiParam({
         name: 'id',
@@ -160,8 +160,8 @@ export class FamilyAllowanceOrchestrateController {
     @Get(':id/docs')
     @ApiOperation({
         operationId: operationIdGetCaseDocuments,
-        summary: 'Get case documents',
-        description: 'Get the family allowance docs for the provided id'
+        summary: 'View family allowance case documents',
+        description: 'View the family allowance docs for the provided id'
     })
     @ApiParam({
         name: 'id',
@@ -181,8 +181,8 @@ export class FamilyAllowanceOrchestrateController {
     @Get(':id/history')
     @ApiOperation({
         operationId: operationIdGetCaseHistory,
-        summary: 'Get case history',
-        description: 'Get the family allowance history for the provided id'
+        summary: 'View family allowance case history',
+        description: 'View the family allowance history for the provided id'
     })
     @ApiParam({
         name: 'id',
@@ -202,7 +202,7 @@ export class FamilyAllowanceOrchestrateController {
     @Post(':id')
     @ApiOperation({
         operationId: operationIdUpdateCase,
-        summary: 'Update case',
+        summary: 'Update family allowance case',
         description: 'Update the family allowance case identified by the provided id'
     })
     @ApiParam({
@@ -220,7 +220,7 @@ export class FamilyAllowanceOrchestrateController {
     @Post(':id/needsInfo')
     @ApiOperation({
         operationId: operationIdNeedsInfo,
-        summary: 'Case needs info',
+        summary: 'Return family allowance case to employee',
         description: 'Mark the family allowance case identified by the provided id as needing info'
     })
     @ApiParam({
@@ -288,7 +288,7 @@ export class FamilyAllowanceOrchestrateController {
     @Get(':id/close')
     @ApiOperation({
         operationId: operationIdCloseCase,
-        summary: 'Close case',
+        summary: 'Close family allowance case',
         description: 'Close the family allowance case identified by the provided id'
     })
     @ApiParam({
